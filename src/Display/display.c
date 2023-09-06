@@ -1,7 +1,9 @@
 #include <SDL.h>
 #include <stdbool.h>
 #include <stdio.h>
+
 #include "display.h"
+#include "keyboard.h"
 
 
 // SDL Utility Variables
@@ -9,6 +11,7 @@ SDL_Window *window;
 SDL_Renderer *renderer;
 
 SDL_Rect drawingRect;
+
 
 // Framerate variables
 const int FPS = 10;
@@ -96,7 +99,10 @@ int showWindow( ) {
             if ( SDL_QUIT == windowEvent.type )
             {
                 isRunning = false;
+            } else if ( SDL_KEYDOWN == windowEvent.type ) {
+                pressKey( windowEvent.key.keysym.sym );
             }
+
             // Content of the program cycle
             programCycle( );
 

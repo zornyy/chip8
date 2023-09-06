@@ -6,3 +6,9 @@
 #define ALEXZORN_CHIP8_KEYBOARD_H
 
 #endif //ALEXZORN_CHIP8_KEYBOARD_H
+
+void initKeyboard( );
+
+void pressKey( int keyCode );
+
+extern _Bool keyboardState[16];
