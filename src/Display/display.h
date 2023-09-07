@@ -5,8 +5,6 @@
 #ifndef ALEXZORN_CHIP8_DISPLAY_H
 #define ALEXZORN_CHIP8_DISPLAY_H
 
-#endif //ALEXZORN_CHIP8_DISPLAY_H
-
 /*
  * This function initializes the display of a window
  *  ( int pixelSize ) => Size of each pixel of the 32x64px display
@@ -26,3 +24,6 @@ int showWindow( );
  *  ( int y ) => position Y of the pixel
  */
 int setPixel( int x, int y );
+
+#endif //ALEXZORN_CHIP8_DISPLAY_H
+

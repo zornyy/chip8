@@ -1,8 +1,6 @@
 #include "display.h"
 #include "keyboard.h"
-#include "logs_lib.h"
 
-#include <stdio.h>
 
 
 /*

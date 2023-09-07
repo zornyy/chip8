@@ -8,7 +8,8 @@ set(SDL2_PATH "E:/Libraries/SDL2/SDL2-2.28.2-mingw/x86_64-w64-mingw32")
 
 include_directories("E:/EPTM/Modules/PR_PROJ/PRO/AlexZorn_CHIP8/src/Display")
 include_directories("E:/EPTM/Modules/PR_PROJ/PRO/AlexZorn_CHIP8/src/Keyboard")
-include_directories("E:/EPTM/Modules/PR_PROJ/PRO/AlexZorn_CHIP8/src/Logs_lib")
+include_directories("E:/EPTM/Modules/PR_PROJ/PRO/AlexZorn_CHIP8/src/cpu")
+include_directories("E:/EPTM/Modules/PR_PROJ/PRO/AlexZorn_CHIP8/src/Stack")
 
 
 find_package(SDL2 REQUIRED)
@@ -18,7 +19,8 @@ include_directories(${SDL2_INCLUDE_DIR})
 add_executable(AlexZorn_CHIP8 main.c
         src/Display/display.c
         src/Keyboard/keyboard.c
-        src/Logs_lib/logs_lib.c
+        src/cpu/cpu.c
+        src/Stack/stack.c
 )
 
 target_link_libraries(${PROJECT_NAME} ${SDL2_LIBRARY})
