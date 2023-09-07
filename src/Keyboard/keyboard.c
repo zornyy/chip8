@@ -70,3 +70,56 @@ void pressKey( int keyCode ) {
             break;
     }
 }
+
+void releaseKey( int keyCode ) {
+    switch ( keyCode ) {
+        case SDLK_1 :
+            keyboardState[0] = false;
+            break;
+        case SDLK_2 :
+            keyboardState[1] = false;
+            break;
+        case SDLK_3 :
+            keyboardState[2] = false;
+            break;
+        case SDLK_4 :
+            keyboardState[3] = false;
+            break;
+        case SDLK_q :
+            keyboardState[4] = false;
+            break;
+        case SDLK_w :
+            keyboardState[5] = false;
+            break;
+        case SDLK_e :
+            keyboardState[6] = false;
+            break;
+        case SDLK_r :
+            keyboardState[7] = false;
+            break;
+        case SDLK_a :
+            keyboardState[8] = false;
+            break;
+        case SDLK_s :
+            keyboardState[9] = false;
+            break;
+        case SDLK_d :
+            keyboardState[10] = false;
+            break;
+        case SDLK_f :
+            keyboardState[11] = false;
+            break;
+        case SDLK_y :
+            keyboardState[12] = false;
+            break;
+        case SDLK_x :
+            keyboardState[13] = false;
+            break;
+        case SDLK_c :
+            keyboardState[14] = false;
+            break;
+        case SDLK_v :
+            keyboardState[15] = false;
+            break;
+    }
+}

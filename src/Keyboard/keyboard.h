@@ -10,5 +10,6 @@
 void initKeyboard( );
 
 void pressKey( int keyCode );
+void releaseKey( int keyCode );
 
 extern _Bool keyboardState[16];

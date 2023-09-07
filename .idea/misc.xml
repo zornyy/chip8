@@ -3,6 +3,8 @@
   <component name="CMakeWorkspace" PROJECT_DIR="$PROJECT_DIR$" />
   <component name="CidrRootsConfiguration">
     <libraryRoots>
+      <file path="$PROJECT_DIR$/lib/include" />
+      <file path="$PROJECT_DIR$/lib/lib" />
       <file path="$PROJECT_DIR$/src" />
     </libraryRoots>
   </component>

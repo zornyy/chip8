@@ -64,6 +64,42 @@ void programCycle( ) {
     clearDisplay( );
 
     // Cycle actions
+    if ( keyboardState[0] == true ) {
+        setPixel(1, 1);
+    } if ( keyboardState[1] == true ) {
+        setPixel(1, 2);
+    } if ( keyboardState[2] == true ) {
+        setPixel(1, 3);
+    } if ( keyboardState[3] == true ) {
+        setPixel(1, 4);
+    } if ( keyboardState[4] == true ) {
+        setPixel(1, 5);
+    } if ( keyboardState[5] == true ) {
+        setPixel(1, 6);
+    } if ( keyboardState[6] == true ) {
+        setPixel(1, 7);
+    } if ( keyboardState[7] == true ) {
+        setPixel(1, 8);
+    } if ( keyboardState[8] == true ) {
+        setPixel(1, 9);
+    } if ( keyboardState[9] == true ) {
+        setPixel(1, 10);
+    } if ( keyboardState[10] == true ) {
+        setPixel(1, 11);
+    } if ( keyboardState[11] == true ) {
+        setPixel(1, 12);
+    } if ( keyboardState[12] == true ) {
+        setPixel(1, 13);
+    } if ( keyboardState[13] == true ) {
+        setPixel(1, 14);
+    } if ( keyboardState[14] == true ) {
+        setPixel(1, 15);
+    } if ( keyboardState[15] == true ) {
+        setPixel(1, 16);
+    }
+
+    /*SDL_SetRenderDrawColor( renderer, 0, 0, 0xFF, SDL_ALPHA_OPAQUE );
+    SDL_RenderCopy( renderer, textureText, NULL, &rectangle );*/
 
     resetBackground( );
 }
@@ -81,6 +117,11 @@ int showWindow( ) {
         printf("Could not create renderer: ");
         return 1;
     }
+
+
+
+
+
     SDL_SetRenderDrawColor( renderer, 0, 0, 0, 255 );
     SDL_RenderClear( renderer );
     SDL_RenderPresent( renderer );
@@ -101,10 +142,14 @@ int showWindow( ) {
                 isRunning = false;
             } else if ( SDL_KEYDOWN == windowEvent.type ) {
                 pressKey( windowEvent.key.keysym.sym );
+            } else if ( SDL_KEYUP == windowEvent.type ) {
+                releaseKey( windowEvent.key.keysym.sym );
             }
 
             // Content of the program cycle
             programCycle( );
+
+            SDL_RenderPresent( renderer );
 
             // Fix the framerate
             fixFramerate( );
