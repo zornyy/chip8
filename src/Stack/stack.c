@@ -16,7 +16,7 @@ bool isEmpty( struct Stack stack ) {
 }
 
 bool isFull( struct Stack stack ) {
-    if ( stack.top == 16 ) {
+    if ( stack.top == 64 ) {
         return true;
     }
     return false;
@@ -42,10 +42,3 @@ int pop( struct Stack stack ) {
 uint8_t top( struct Stack stack ) {
     return stack.content[stack.top - 1];
 }
-
-void test( ) {
-    struct Stack st;
-    st.top = 0;
-}
-
-
