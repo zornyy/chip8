@@ -42,7 +42,7 @@ void drawRect( ) {
     SDL_RenderFillRect( renderer, &drawingRect );
 }
 
-int setPixel( int x, int y ) {
+void setPixel( int x, int y ) {
     drawingRect.x = x * pxSize;
     drawingRect.y = y * pxSize;
     drawRect( );

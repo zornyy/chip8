@@ -7,6 +7,8 @@
 
 #include <stdint.h>
 
+
+// Global Variables
 extern uint8_t memory[4096];
 
 extern uint8_t v[16];

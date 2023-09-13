@@ -23,7 +23,7 @@ int showWindow( );
  *  ( int x ) => position X of the pixel
  *  ( int y ) => position Y of the pixel
  */
-int setPixel( int x, int y );
+void setPixel( int x, int y );
 
 #endif //ALEXZORN_CHIP8_DISPLAY_H
 
