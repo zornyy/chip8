@@ -9,7 +9,7 @@
  * This function initializes the display of a window
  *  ( int pixelSize ) => Size of each pixel of the 32x64px display
  */
-int initDisplay( int pixelSize );
+void initDisplay( int pixelSize );
 
 
 /*

@@ -1,6 +1,16 @@
 #include "display.h"
 #include "keyboard.h"
+#include "cpu.h"
 
+
+int initProgram( ) {
+    initKeyboard( );
+    initDisplay( 10 );
+    initCPU( );
+
+    loadSpritesIntoMemory( );
+    return loadRom();
+}
 
 
 /*
@@ -9,8 +19,9 @@
  */
 int main() {
     // Initialize every dependencies
-    initKeyboard();
-    initDisplay( 10 );
+    if ( initProgram() == 1 ) {
+        return 1;
+    }
 
     // Start the main Loop and show the window
     showWindow( );

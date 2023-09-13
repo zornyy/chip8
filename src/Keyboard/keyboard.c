@@ -16,7 +16,10 @@ void initKeyboard( ) {
     for ( int i=0; i<16; i++ ) {
         keyboardState[i] = false;
     }
+    SDL_Log("Keyboard is initialized");
 }
+
+// TODO: make one function for pressKey and releaseKey
 
 void pressKey( int keyCode ) {
     SDL_Log("Key pressed: %d", keyCode);
@@ -73,6 +76,7 @@ void pressKey( int keyCode ) {
 }
 
 void releaseKey( int keyCode ) {
+    SDL_Log("Key released: %d", keyCode);
     switch ( keyCode ) {
         case SDLK_1 :
             keyboardState[0] = false;

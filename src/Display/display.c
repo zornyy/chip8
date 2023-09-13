@@ -17,7 +17,7 @@ SDL_Rect drawingRect;
 
 
 // Framerate variables
-const int FPS = 10;
+const int FPS = 60;
 const int frameDelay = 1000 / FPS;
 Uint64 frameStart;
 Uint64 frameTime;
@@ -56,12 +56,13 @@ void fixFramerate(  ) {
     }
 }
 
-int initDisplay( int pixelSize ) {
+void initDisplay( int pixelSize ) {
     SDL_Init( SDL_INIT_EVERYTHING );
     pxSize = pixelSize;
     drawingRect.h = pixelSize, drawingRect.w = pixelSize;
     width = pixelSize * 64, height = pixelSize * 32;
-    return 0;
+
+    SDL_Log("Display initialized with 64x32px\n");
 }
 
 void programCycle( ) {
@@ -77,17 +78,15 @@ int showWindow( ) {
     window = SDL_CreateWindow( "Sample Window C", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, width, height, SDL_WINDOW_ALLOW_HIGHDPI );
     if ( NULL == window )
     {
-        printf("Could not create window: ");
+        SDL_Log("Could not create window");
         return 1;
     }
 
     renderer = SDL_CreateRenderer( window, -1, 0 );
     if ( NULL == renderer ) {
-        printf("Could not create renderer: ");
+        SDL_Log("Could not create renderer");
         return 1;
     }
-
-
 
 
     SDL_SetRenderDrawColor( renderer, 0, 0, 0, 255 );
@@ -98,6 +97,7 @@ int showWindow( ) {
 
     bool isRunning = true;
 
+    SDL_Log("Starting Main loop fixed at %dHz\n", FPS);
     // Main Program LOOP
     while ( isRunning )
     {
