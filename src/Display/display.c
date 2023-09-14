@@ -69,7 +69,7 @@ void programCycle( ) {
     clearDisplay( );
 
     // Cycle actions
-
+    cpuCycle();
 
     resetBackground( );
 }

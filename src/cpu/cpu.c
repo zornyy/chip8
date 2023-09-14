@@ -5,19 +5,22 @@
 
 #include <stdio.h>
 #include <SDL.h>
+#include <stdbool.h>
+#include <windows.h>
 
 #include "cpu.h"
 
 
 chip8_t CHIP8;
 
-char ROM_PATH[] = "D:/EPTM/Modules/PR_PROJ/PRO/ch8_Decoder/ibmLogo.ch8";
+char ROM_PATH[] = "E:/EPTM/Modules/PR_PROJ/PRO/ch8_Decoder/ibmLogo.ch8";
 
 void initCPU( ) {
     CHIP8.PC = 0x200;
     CHIP8.speed = 10;
     CHIP8.delay_timer = 0;
-    CHIP8.sound_timer = 0;
+    CHIP8.sound_timer = 10;
+    CHIP8.paused = false;
 
     SDL_Log("CPU initialized");
 }
@@ -50,11 +53,11 @@ void loadSpritesIntoMemory( ) {
     for ( int i = 0; i < 80; i++ ) {
         CHIP8.ram[i] = sprites[i];
     }
-    SDL_Log( "Sprites loaded into ram\n" );
+    SDL_Log( "Sprites loaded into RAM\n" );
 }
 
 void loadProgramIntoMemory( program loadingProgram ) {
-    SDL_Log( "Rom loading started" );
+    SDL_Log( "ROM loading started" );
     for ( int i = 0; i < loadingProgram.size; i++ ) {
         CHIP8.ram[i + 0x200] = loadingProgram.code[i];
     }
@@ -89,9 +92,43 @@ int loadRom( ) {
         return 1;
     }
 
-    SDL_Log("Secon part\n" );
-
     loadProgramIntoMemory( loadingProgram );
 
     return 0;
+}
+
+int executeOpcode( uint16_t opcode ) {
+    // TODO
+    return 0;
+}
+
+void playSound( ) {
+    if ( CHIP8.sound_timer > 0 ) {
+        // Beep( 1000, 1000 );
+        // Beep function must be better understood outside of class because of noise
+        // Todo: worlk on beep
+    }
+}
+
+void updateTimers( ) {
+    if ( CHIP8.delay_timer > 0 ) {
+        CHIP8.delay_timer --;
+    }
+    if ( CHIP8.sound_timer > 0 ) {
+        CHIP8.sound_timer --;
+    }
+}
+
+void cpuCycle( ) {
+    for ( int i = 0; i < CHIP8.speed; i++ ) {
+        if ( !CHIP8.paused ) {
+            uint16_t opcode = (CHIP8.ram[CHIP8.PC] << 8 | CHIP8.ram[CHIP8.PC + 1] );
+            executeOpcode( opcode );
+        }
+    }
+
+    if ( !CHIP8.paused ) {
+        updateTimers();
+    }
+    playSound( );
 }
