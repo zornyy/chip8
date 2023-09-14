@@ -75,7 +75,7 @@ void programCycle( ) {
 }
 
 int showWindow( ) {
-    window = SDL_CreateWindow( "Sample Window C", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, width, height, SDL_WINDOW_ALLOW_HIGHDPI );
+    window = SDL_CreateWindow( "AlexZorn - Chip-8 Emulator", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, width, height, SDL_WINDOW_ALLOW_HIGHDPI );
     if ( NULL == window )
     {
         SDL_Log("Could not create window");
