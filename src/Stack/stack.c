@@ -8,21 +8,21 @@
 
 
 
-bool isEmpty( struct Stack stack ) {
+bool isEmpty( Stack stack ) {
     if ( stack.top == 0 ) {
         return true;
     }
     return false;
 }
 
-bool isFull( struct Stack stack ) {
-    if ( stack.top == 64 ) {
+bool isFull( Stack stack ) {
+    if ( stack.top == 16 ) {
         return true;
     }
     return false;
 }
 
-int push( struct Stack stack, uint8_t value ) {
+int push( Stack stack, uint8_t value ) {
     if ( !isFull( stack ) ) {
         stack.content[stack.top] = value;
         stack.top++;
@@ -31,14 +31,14 @@ int push( struct Stack stack, uint8_t value ) {
     return 1;
 }
 
-int pop( struct Stack stack ) {
+int pop( Stack stack ) {
     if ( !isEmpty( stack ) ) {
         stack.top--;
-        return 0;
+        return stack.content[stack.top];
     }
-    return 1;
+    return -1;
 }
 
-uint8_t top( struct Stack stack ) {
+uint8_t top( Stack stack ) {
     return stack.content[stack.top - 1];
 }

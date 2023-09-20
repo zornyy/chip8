@@ -6,10 +6,11 @@
 #define ALEXZORN_CHIP8_CPU_H
 
 #include <stdint.h>
+#include <stack.h>
 
 typedef struct {
     uint8_t ram[4096];
-    uint16_t stack[12];
+    Stack stack;
     uint8_t V[16];
     uint16_t I;
     uint16_t PC;

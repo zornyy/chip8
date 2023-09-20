@@ -4,18 +4,31 @@
 
 
 #include <stdio.h>
+#include <stdlib.h>
 #include <SDL.h>
 #include <stdbool.h>
+#include <time.h>
 #include <windows.h>
 
 #include "cpu.h"
+#include "display.h"
+#include "keyboard.h"
 
 
 chip8_t CHIP8;
 
-char ROM_PATH[] = "E:/EPTM/Modules/PR_PROJ/PRO/ch8_Decoder/ibmLogo.ch8";
+char ROM_PATH[] = "E:\\EPTM\\Modules\\PR_PROJ\\PRO\\AlexZorn_CHIP8\\programs\\IBM_Logo.ch8";
 
 program Program;
+
+
+// opcodes variables
+int x;
+int y;
+
+int spriteWidth;
+int spriteHeight;
+int sprite;
 
 void initCPU( ) {
     CHIP8.PC = 0x200;
@@ -23,10 +36,20 @@ void initCPU( ) {
     CHIP8.delay_timer = 0;
     CHIP8.sound_timer = 10;
     CHIP8.paused = false;
+    CHIP8.stack.top = 0;
+
+    srand(time(0));
 
     SDL_Log("CPU initialized");
 }
 
+int generateRandom( ) {
+    int lower = 0x00;
+    int higher = 0xFF;
+
+    int num = (rand() % ( higher - lower +1)) + lower;
+    return num;
+}
 
 void loadSpritesIntoMemory( ) {
 
@@ -105,64 +128,175 @@ int executeOpcode( uint16_t opcode ) {
         case 0x0:
             switch ( opcode ) {
                 case 0x00E0:
+                    clearDisplay();
                     break;
                 case 0x00EE:
+                    CHIP8.PC = pop( CHIP8.stack );
                     break;
             }
 
             break;
         case 0x1:
+            CHIP8.PC = ( opcode & 0xFFF );
             break;
         case 0x2:
+            push( CHIP8.stack, CHIP8.PC );
+            CHIP8.PC = ( opcode & 0xFFF );
             break;
         case 0x3:
+            x = ( opcode & 0x0F00 ) >> 8;
+            if ( CHIP8.V[x] == ( opcode & 0xFF ) ) {
+                CHIP8.PC += 2;
+            }
             break;
         case 0x4:
+            x = ( opcode & 0x0F00 ) >> 8;
+            if ( CHIP8.V[x] != ( opcode & 0xFF ) ) {
+                CHIP8.PC += 2;
+            }
             break;
         case 0x5:
+            x = ( opcode & 0x0F00 ) >> 8;
+            y = ( opcode & 0x00F0 ) >> 4;
+            if ( CHIP8.V[x] == CHIP8.V[y] ) {
+                CHIP8.PC += 2;
+            }
             break;
         case 0x6:
+            x = ( opcode & 0x0F00 ) >> 8;
+            CHIP8.V[x] = ( opcode & 0xFF );
             break;
         case 0x7:
+            x = ( opcode & 0x0F00 ) >> 8;
+            CHIP8.V[x] += ( opcode & 0xFF );
             break;
         case 0x8:
             switch ( opcode & 0xF ) {
                 case 0x0:
+                    x = ( opcode & 0x0F00 ) >> 8;
+                    y = ( opcode & 0x00F0 ) >> 4;
+                    CHIP8.V[x] = CHIP8.V[y];
                     break;
                 case 0x1:
+                    x = ( opcode & 0x0F00 ) >> 8;
+                    y = ( opcode & 0x00F0 ) >> 4;
+                    CHIP8.V[x] = ( CHIP8.V[y] | CHIP8.V[x] );
                     break;
                 case 0x2:
+                    x = ( opcode & 0x0F00 ) >> 8;
+                    y = ( opcode & 0x00F0 ) >> 4;
+                    CHIP8.V[x] = ( CHIP8.V[y] & CHIP8.V[x] );
                     break;
                 case 0x3:
+                    x = ( opcode & 0x0F00 ) >> 8;
+                    y = ( opcode & 0x00F0 ) >> 4;
+                    CHIP8.V[x] = ( CHIP8.V[y] ^ CHIP8.V[x] );
                     break;
                 case 0x4:
+                    x = ( opcode & 0x0F00 ) >> 8;
+                    y = ( opcode & 0x00F0 ) >> 4;
+                    int sum = CHIP8.V[x] + CHIP8.V[y];
+                    CHIP8.V[0xF] = 0;
+
+                    if ( sum > 0xFF ) {
+                        CHIP8.V[0xF] = 1;
+                    }
+
+                    CHIP8.V[x] = sum;
                     break;
                 case 0x5:
+                    x = ( opcode & 0x0F00 ) >> 8;
+                    y = ( opcode & 0x00F0 ) >> 4;
+
+                    CHIP8.V[0xF] = 0;
+
+                    if ( CHIP8.V[x] > CHIP8.V[y] ) {
+                        CHIP8.V[0xF] = 1;
+                    }
+
+                    CHIP8.V[x] -= CHIP8.V[y];
                     break;
                 case 0x6:
+                    x = ( opcode & 0x0F00 ) >> 8;
+                    CHIP8.V[0xF] = ( CHIP8.V[x] & 0x1 );
+
+                    CHIP8.V[x] >>= 1;
                     break;
                 case 0x7:
+                    x = ( opcode & 0x0F00 ) >> 8;
+                    y = ( opcode & 0x00F0 ) >> 4;
+
+                    CHIP8.V[0xF] = 0;
+
+                    if ( CHIP8.V[y] > CHIP8.V[x] ) {
+                        CHIP8.V[0xF] = 1;
+                    }
+
+                    CHIP8.V[x] = CHIP8.V[y] - CHIP8.V[x];
                     break;
                 case 0xE:
+                    x = ( opcode & 0x0F00 ) >> 8;
+                    CHIP8.V[0xF] = ( CHIP8.V[x] & 0x1 );
+
+                    CHIP8.V[x] <<= 1;
                     break;
             }
 
             break;
         case 0x9:
+            x = ( opcode & 0x0F00 ) >> 8;
+            y = ( opcode & 0x00F0 ) >> 4;
+
+            if ( CHIP8.V[x] != CHIP8.V[y] ) {
+                CHIP8.PC += 2;
+            }
             break;
         case 0xA:
+            CHIP8.I = ( opcode & 0xFFF );
             break;
         case 0xB:
+            CHIP8.I = ( opcode & 0xFFF ) + CHIP8.V[0];
             break;
         case 0xC:
+            x = ( opcode & 0x0F00 ) >> 8;
+            CHIP8.V[x] = generateRandom( ) & ( opcode & 0xFF );
+
             break;
         case 0xD:
+            // Todo: DRW opcode
+            x = ( opcode & 0x0F00 ) >> 8;
+            y = ( opcode & 0x00F0 ) >> 4;
+
+            spriteWidth = 8;
+            spriteHeight = ( opcode & 0xF );
+
+            setPixel( 10, 10 );
+
+            for ( int row = 0; row < spriteHeight; row++ ) {
+                sprite = CHIP8.ram[CHIP8.I + row];
+
+                for ( int col = 0; col < spriteWidth; col++ ) {
+                    if (( sprite & 0x80 ) > 0 ) {
+                        CHIP8.V[0xF] = setPixel( CHIP8.V[x] + col, CHIP8.V[y] + row );
+                    }
+
+                    sprite <<= 1;
+                }
+            }
             break;
         case 0xE:
             switch ( opcode & 0xFF ) {
                 case 0x9E:
+                    x = ( opcode & 0x0F00 ) >> 8;
+                    if ( keyboardState[CHIP8.V[x]] == true ) {
+                        CHIP8.PC += 2;
+                    }
                     break;
                 case 0xA1:
+                    x = ( opcode & 0x0F00 ) >> 8;
+                    if ( keyboardState[CHIP8.V[x]] == false ) {
+                        CHIP8.PC += 2;
+                    }
                     break;
             }
 
@@ -170,25 +304,49 @@ int executeOpcode( uint16_t opcode ) {
         case 0xF:
             switch ( opcode & 0xFF ) {
                 case 0x07:
+                    x = ( opcode & 0x0F00 ) >> 8;
+                    CHIP8.V[x] = CHIP8.delay_timer;
                     break;
                 case 0x0A:
+                    // TODO: Pause until keypress instruction
+                    CHIP8.paused = true;
+                    SDL_Log("paused");
                     break;
                 case 0x15:
+                    x = ( opcode & 0x0F00 ) >> 8;
+                    CHIP8.delay_timer = CHIP8.V[x];
                     break;
                 case 0x18:
+                    x = ( opcode & 0x0F00 ) >> 8;
+                    CHIP8.sound_timer = CHIP8.V[x];
                     break;
                 case 0x1E:
+                    x = ( opcode & 0x0F00 ) >> 8;
+                    CHIP8.I = CHIP8.I + CHIP8.V[x];
                     break;
                 case 0x29:
+                    x = ( opcode & 0x0F00 ) >> 8;
+                    CHIP8.I = CHIP8.V[x] * 5;
                     break;
                 case 0x33:
+                    x = ( opcode & 0x0F00 ) >> 8;
+                    CHIP8.ram[CHIP8.I] = CHIP8.V[x] % 10;
+                    CHIP8.ram[CHIP8.I + 1] = CHIP8.V[x] / 10 % 10;
+                    CHIP8.ram[CHIP8.I + 2] = CHIP8.V[x] / 100 % 10;
                     break;
                 case 0x55:
+                    x = ( opcode & 0x0F00 ) >> 8;
+                    for ( int idx; idx <= x; idx++ ) {
+                        CHIP8.ram[CHIP8.I + idx] = CHIP8.V[idx];
+                    }
                     break;
                 case 0x65:
+                    x = ( opcode & 0x0F00 ) >> 8;
+                    for ( int idx; idx <= x; idx++ ) {
+                        CHIP8.V[idx]= CHIP8.ram[CHIP8.I + idx];
+                    }
                     break;
             }
-
             break;
         default:
             SDL_Log( "Unknown opcode %x", opcode );
@@ -203,7 +361,7 @@ void playSound( ) {
     if ( CHIP8.sound_timer > 0 ) {
         // Beep( 1000, 1000 );
         // Beep function must be better understood outside of class because of noise
-        // Todo: worlk on beep
+        // Todo: work on beep
     }
 }
 

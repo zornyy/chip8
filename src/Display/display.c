@@ -1,8 +1,6 @@
 #include <SDL.h>
 #include <stdbool.h>
-#include <stdio.h>
 
-#include "stack.h"
 #include "stack.h"
 #include "cpu.h"
 #include "display.h"
@@ -21,6 +19,10 @@ const int FPS = 60;
 const int frameDelay = 1000 / FPS;
 Uint64 frameStart;
 Uint64 frameTime;
+
+
+// Screen matrix
+int screenState[64][32];
 
 
 
@@ -42,10 +44,41 @@ void drawRect( ) {
     SDL_RenderFillRect( renderer, &drawingRect );
 }
 
-void setPixel( int x, int y ) {
+void eraseRect( ) {
+    SDL_SetRenderDrawColor( renderer, 0, 0, 0, 0);
+    SDL_RenderFillRect( renderer, &drawingRect );
+}
+
+int setPixel( int x, int y ) {
+
+    // wrap the pixel on the other side of the screen if out display
+    if ( x > 63 ) {
+        x -= 64;
+    } else if ( x < 0 ) {
+        x += 64;
+    }
+
+    if ( y > 31 ) {
+        y -= 32;
+    } else if ( y < 0 ) {
+        y += 32;
+    }
+
+    // Set the coordinates to draw the pixel
     drawingRect.x = x * pxSize;
     drawingRect.y = y * pxSize;
-    drawRect( );
+
+    // update the screenState
+    screenState[x][y] ^= 1;
+
+    // Draw or erase the pixel
+    if ( screenState[x][y] == 1 ) {
+        drawRect( );
+        return 0;
+    } else {
+        eraseRect( );
+        return 1;
+    }
 }
 
 void fixFramerate(  ) {
@@ -56,22 +89,34 @@ void fixFramerate(  ) {
     }
 }
 
+
 void initDisplay( int pixelSize ) {
     SDL_Init( SDL_INIT_EVERYTHING );
     pxSize = pixelSize;
     drawingRect.h = pixelSize, drawingRect.w = pixelSize;
     width = pixelSize * 64, height = pixelSize * 32;
 
+
+    // init screen matrix
+    for ( int x = 0; x < 64; x++ ) {
+        for ( int y = 0; y < 32; y++ ) {
+            screenState[x][y] = 0;
+        }
+    }
+
     SDL_Log("Display initialized with 64x32px\n");
 }
 
 void programCycle( ) {
-    clearDisplay( );
+    // clearDisplay( );
+
 
     // Cycle actions
-    cpuCycle();
+    cpuCycle( );
+    // drawScreen( );
 
-    resetBackground( );
+
+    // resetBackground( );
 }
 
 int showWindow( ) {
