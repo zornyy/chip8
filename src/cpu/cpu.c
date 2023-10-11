@@ -17,7 +17,7 @@
 
 chip8_t CHIP8;
 
-char ROM_PATH[] = "E:\\EPTM\\Modules\\PR_PROJ\\PRO\\AlexZorn_CHIP8\\programs\\IBM_Logo.ch8";
+char ROM_PATH[] = "E:\\EPTM\\Modules\\PR_PROJ\\PRO\\AlexZorn_CHIP8\\programs\\Corax.ch8";
 
 program Program;
 
@@ -74,7 +74,7 @@ void loadSpritesIntoMemory( ) {
     };
 
     // load sprites into memory
-    // sprites are stored in the memory starting at address 0x000
+    // load sprites starting at 0x000
     for ( int i = 0; i < 80; i++ ) {
         CHIP8.ram[i] = sprites[i];
     }
@@ -102,7 +102,8 @@ int loadRom( ) {
     // Get rom size
     fseek( rom, 0, SEEK_END );
     Program.size = ftell( rom );
-    const size_t max_size = sizeof CHIP8.ram - 0x200; // the program can't exceed the 4kb of memory and starts at 0x200
+    // the program can't exceed the 4kb of memory and starts at 0x200
+    const size_t max_size = sizeof CHIP8.ram - 0x200;
     rewind( rom );
 
     if ( Program.size > max_size ) {
@@ -114,7 +115,6 @@ int loadRom( ) {
         SDL_Log( "Could not read from file %s", ROM_PATH );
         return 1;
     }
-
     loadProgramIntoMemory( Program );
 
     return 0;
@@ -131,7 +131,8 @@ int executeOpcode( uint16_t opcode ) {
                     clearDisplay();
                     break;
                 case 0x00EE:
-                    CHIP8.PC = pop( CHIP8.stack );
+                    CHIP8.PC = pop( &CHIP8.stack );
+                    SDL_Log("PC set to %x", CHIP8.PC);
                     break;
             }
 
@@ -140,7 +141,7 @@ int executeOpcode( uint16_t opcode ) {
             CHIP8.PC = ( opcode & 0xFFF );
             break;
         case 0x2:
-            push( CHIP8.stack, CHIP8.PC );
+            push( &CHIP8.stack, CHIP8.PC );
             CHIP8.PC = ( opcode & 0xFFF );
             break;
         case 0x3:
@@ -231,8 +232,6 @@ int executeOpcode( uint16_t opcode ) {
                     if ( CHIP8.V[y] > CHIP8.V[x] ) {
                         CHIP8.V[0xF] = 1;
                     }
-
-                    CHIP8.V[x] = CHIP8.V[y] - CHIP8.V[x];
                     break;
                 case 0xE:
                     x = ( opcode & 0x0F00 ) >> 8;
@@ -267,17 +266,15 @@ int executeOpcode( uint16_t opcode ) {
             x = ( opcode & 0x0F00 ) >> 8;
             y = ( opcode & 0x00F0 ) >> 4;
 
-            spriteWidth = 8;
-            spriteHeight = ( opcode & 0xF );
+            spriteWidth = 8; // Sprites are always 8 pixels wide
+            spriteHeight = ( opcode & 0xF ); // Height of the sprite according to it's size
 
-            setPixel( 10, 10 );
-
-            for ( int row = 0; row < spriteHeight; row++ ) {
+            for ( int row = 0; row < spriteHeight; row++ ) { // loop through the rows
                 sprite = CHIP8.ram[CHIP8.I + row];
 
-                for ( int col = 0; col < spriteWidth; col++ ) {
-                    if (( sprite & 0x80 ) > 0 ) {
-                        CHIP8.V[0xF] = setPixel( CHIP8.V[x] + col, CHIP8.V[y] + row );
+                for ( int col = 0; col < spriteWidth; col++ ) { // loop through the pixels
+                    if (( sprite & 0x80 ) > 0 ) { // if pixel is white in sprite
+                        CHIP8.V[0xF] = setPixel( CHIP8.V[x] + col, CHIP8.V[y] + row ); // set pixel
                     }
 
                     sprite <<= 1;

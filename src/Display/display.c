@@ -40,7 +40,7 @@ void resetBackground( ) {
 }
 
 void drawRect( ) {
-    SDL_SetRenderDrawColor( renderer, 255, 255, 255, 255);
+    SDL_SetRenderDrawColor( renderer, 222, 27, 199, 255);
     SDL_RenderFillRect( renderer, &drawingRect );
 }
 
@@ -52,6 +52,8 @@ void eraseRect( ) {
 int setPixel( int x, int y ) {
 
     // wrap the pixel on the other side of the screen if out display
+
+
     if ( x > 63 ) {
         x -= 64;
     } else if ( x < 0 ) {
@@ -75,10 +77,9 @@ int setPixel( int x, int y ) {
     if ( screenState[x][y] == 1 ) {
         drawRect( );
         return 0;
-    } else {
-        eraseRect( );
-        return 1;
     }
+    eraseRect( );
+    return 1;
 }
 
 void fixFramerate(  ) {
@@ -149,7 +150,7 @@ int showWindow( ) {
         frameStart = SDL_GetTicks();
         while ( SDL_PollEvent( &windowEvent ) )
         {
-            // Check for QUIT Event
+            // Check for SDL Events
             if ( SDL_QUIT == windowEvent.type )
             {
                 isRunning = false;
