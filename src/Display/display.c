@@ -94,7 +94,7 @@ void fixFramerate(  ) {
 void initDisplay( int pixelSize ) {
     SDL_Init( SDL_INIT_EVERYTHING );
     pxSize = pixelSize;
-    drawingRect.h = pixelSize, drawingRect.w = pixelSize;
+    drawingRect.h = pixelSize - 1, drawingRect.w = pixelSize - 1;
     width = pixelSize * 64, height = pixelSize * 32;
 
 
@@ -159,15 +159,15 @@ int showWindow( ) {
             } else if ( SDL_KEYUP == windowEvent.type ) {
                 releaseKey( windowEvent.key.keysym.sym );
             }
-
-            // Content of the program cycle
-            programCycle( );
-
-            SDL_RenderPresent( renderer );
-
-            // Fix the framerate
-            fixFramerate( );
         }
+
+        // Content of the program cycle
+        programCycle( );
+
+        SDL_RenderPresent( renderer );
+
+        // Fix the framerate
+        fixFramerate( );
     }
 
     SDL_DestroyWindow( window );

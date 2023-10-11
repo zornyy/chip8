@@ -5,7 +5,7 @@
 
 int initProgram( ) {
     initKeyboard( );
-    initDisplay( 10 );
+    initDisplay( 20 );
     initCPU( );
 
     loadSpritesIntoMemory( );

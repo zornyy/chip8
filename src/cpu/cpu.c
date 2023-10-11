@@ -17,7 +17,7 @@
 
 chip8_t CHIP8;
 
-char ROM_PATH[] = "E:\\EPTM\\Modules\\PR_PROJ\\PRO\\AlexZorn_CHIP8\\programs\\Corax.ch8";
+char ROM_PATH[] = "../programs/Corax.ch8";
 
 program Program;
 
@@ -75,6 +75,8 @@ void loadSpritesIntoMemory( ) {
 
     // load sprites into memory
     // load sprites starting at 0x000
+
+    // TODO: Default sprites are not working when used into programs
     for ( int i = 0; i < 80; i++ ) {
         CHIP8.ram[i] = sprites[i];
     }
@@ -132,7 +134,6 @@ int executeOpcode( uint16_t opcode ) {
                     break;
                 case 0x00EE:
                     CHIP8.PC = pop( &CHIP8.stack );
-                    SDL_Log("PC set to %x", CHIP8.PC);
                     break;
             }
             break;
@@ -180,17 +181,17 @@ int executeOpcode( uint16_t opcode ) {
                 case 0x1:
                     x = ( opcode & 0x0F00 ) >> 8;
                     y = ( opcode & 0x00F0 ) >> 4;
-                    CHIP8.V[x] = ( CHIP8.V[y] | CHIP8.V[x] );
+                    CHIP8.V[x] |= CHIP8.V[y];
                     break;
                 case 0x2:
                     x = ( opcode & 0x0F00 ) >> 8;
                     y = ( opcode & 0x00F0 ) >> 4;
-                    CHIP8.V[x] = ( CHIP8.V[y] & CHIP8.V[x] );
+                    CHIP8.V[x] &= CHIP8.V[y];
                     break;
                 case 0x3:
                     x = ( opcode & 0x0F00 ) >> 8;
                     y = ( opcode & 0x00F0 ) >> 4;
-                    CHIP8.V[x] = ( CHIP8.V[y] ^ CHIP8.V[x] );
+                    CHIP8.V[x] ^= CHIP8.V[y];
                     break;
                 case 0x4:
                     x = ( opcode & 0x0F00 ) >> 8;
@@ -231,10 +232,12 @@ int executeOpcode( uint16_t opcode ) {
                     if ( CHIP8.V[y] > CHIP8.V[x] ) {
                         CHIP8.V[0xF] = 1;
                     }
+
+                    CHIP8.V[x] = CHIP8.V[y] - CHIP8.V[x];
                     break;
                 case 0xE:
                     x = ( opcode & 0x0F00 ) >> 8;
-                    CHIP8.V[0xF] = ( CHIP8.V[x] & 0x1 );
+                    CHIP8.V[0xF] = ( CHIP8.V[x] & 0x80 );
 
                     CHIP8.V[x] <<= 1;
                     break;
@@ -253,7 +256,7 @@ int executeOpcode( uint16_t opcode ) {
             CHIP8.I = ( opcode & 0xFFF );
             break;
         case 0xB:
-            CHIP8.I = ( opcode & 0xFFF ) + CHIP8.V[0];
+            CHIP8.PC = ( opcode & 0xFFF ) + CHIP8.V[0];
             break;
         case 0xC:
             x = ( opcode & 0x0F00 ) >> 8;
@@ -261,7 +264,6 @@ int executeOpcode( uint16_t opcode ) {
 
             break;
         case 0xD:
-            // Todo: DRW opcode
             x = ( opcode & 0x0F00 ) >> 8;
             y = ( opcode & 0x00F0 ) >> 4;
 
@@ -326,13 +328,13 @@ int executeOpcode( uint16_t opcode ) {
                     break;
                 case 0x33:
                     x = ( opcode & 0x0F00 ) >> 8;
-                    CHIP8.ram[CHIP8.I] = CHIP8.V[x] % 10;
+                    CHIP8.ram[CHIP8.I] = CHIP8.V[x] / 100 % 10;
                     CHIP8.ram[CHIP8.I + 1] = CHIP8.V[x] / 10 % 10;
-                    CHIP8.ram[CHIP8.I + 2] = CHIP8.V[x] / 100 % 10;
+                    CHIP8.ram[CHIP8.I + 2] = CHIP8.V[x] % 10;
                     break;
                 case 0x55:
                     x = ( opcode & 0x0F00 ) >> 8;
-                    for ( int idx; idx <= x; idx++ ) {
+                    for ( int idx = 0; idx <= x; idx++ ) {
                         CHIP8.ram[CHIP8.I + idx] = CHIP8.V[idx];
                     }
                     break;
@@ -376,7 +378,7 @@ void cpuCycle( ) {
             uint16_t opcode = (CHIP8.ram[CHIP8.PC] << 8 | CHIP8.ram[CHIP8.PC + 1] );
 
             // Do not execute opcode if out of the program
-            if ( CHIP8.PC <= Program.size + 0x200 - 1 ) {
+            if ( CHIP8.PC <= Program.size + 0x200 - 1 && CHIP8.PC >= 0x200 ) {
                 executeOpcode( opcode );
             }
         }
