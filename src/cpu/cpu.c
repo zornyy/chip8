@@ -135,7 +135,6 @@ int executeOpcode( uint16_t opcode ) {
                     SDL_Log("PC set to %x", CHIP8.PC);
                     break;
             }
-
             break;
         case 0x1:
             CHIP8.PC = ( opcode & 0xFFF );
