@@ -1,5 +1,5 @@
 //
-// Created by Student on 07.09.2023.
+// Created by Zorny on 07.09.2023.
 //
 
 #ifndef ALEXZORN_CHIP8_CPU_H
@@ -7,6 +7,15 @@
 
 #include <stdint.h>
 #include <stack.h>
+
+typedef struct {
+    uint16_t content;
+    uint16_t nnn;
+    uint8_t kk;
+    uint8_t x;
+    uint8_t y;
+    uint8_t n;
+} opcode_t;
 
 typedef struct {
     uint8_t ram[4096];

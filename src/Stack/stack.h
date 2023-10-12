@@ -1,5 +1,5 @@
 //
-// Created by Student on 07.09.2023.
+// Created by Zorny on 07.09.2023.
 //
 
 #ifndef ALEXZORN_CHIP8_STACK_H
