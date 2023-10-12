@@ -36,7 +36,6 @@ typedef struct {
 
 // Global Variables
 extern chip8_t CHIP8;
-extern char ROM_PATH[100];
 
 /*
  * Function initializes the CPU values for program start
@@ -51,7 +50,7 @@ void loadSpritesIntoMemory();
 /*
  * Function loads the rom specified in the cpu.c file and loads it into memory starting at address 0x200
  */
-int loadRom( );
+int loadRom( char *ROM_PATH );
 
 /*
  * Function executes the CPU action for one cycle of the CHIP-8 emulator (runs at 60Hz)

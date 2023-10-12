@@ -19,8 +19,6 @@ int carry;
 
 chip8_t CHIP8;
 
-char ROM_PATH[] = "../programs/Games/breakout.ch8";
-
 program Program;
 
 
@@ -97,7 +95,7 @@ void loadProgramIntoMemory( program loadingProgram ) {
 }
 
 
-int loadRom( ) {
+int loadRom( char *ROM_PATH ) {
 
     // Get the rom
     FILE *rom = fopen( ROM_PATH, "rb" );
@@ -312,8 +310,6 @@ int executeOpcode( opcode_t *opcode ) {
             SDL_Log( "Unknown opcode %x", opcode->content );
     }
 
-
-    // CHIP8.PC += 2;
     return 0;
 }
 
