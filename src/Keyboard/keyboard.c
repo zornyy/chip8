@@ -19,12 +19,11 @@ void initKeyboard( ) {
     SDL_Log("Keyboard is initialized");
 }
 
-// TODO: make one function for pressKey and releaseKey
-
 void pressKey( int keyCode ) {
     SDL_Log("Key pressed: %d", keyCode);
+
     switch ( keyCode ) {
-        case SDLK_1 :
+        case 49 :
             keyboardState[0] = true;
             break;
         case SDLK_2 :

@@ -14,10 +14,12 @@
 #include "display.h"
 #include "keyboard.h"
 
+int sum;
+int carry;
 
 chip8_t CHIP8;
 
-char ROM_PATH[] = "../programs/Corax.ch8";
+char ROM_PATH[] = "../programs/Games/breakout.ch8";
 
 program Program;
 
@@ -80,8 +82,6 @@ void loadSpritesIntoMemory( ) {
 
     // load sprites into memory
     // load sprites starting at 0x000
-
-    // TODO: Default sprites are not working when used into programs
     for ( int i = 0; i < 80; i++ ) {
         CHIP8.ram[i] = sprites[i];
     }
@@ -129,6 +129,8 @@ int loadRom( ) {
 
 int executeOpcode( opcode_t *opcode ) {
     SDL_Log( "Executing opcode %x", opcode->content );
+
+    CHIP8.PC += 2;
 
     // Switch case for the opcodes
     switch ( opcode->content >> 12 ) {
@@ -185,40 +187,38 @@ int executeOpcode( opcode_t *opcode ) {
                     CHIP8.V[opcode->x] ^= CHIP8.V[opcode->y];
                     break;
                 case 0x4:
-                    CHIP8.V[0xF] = 0;
-                    int sum = CHIP8.V[opcode->x] + CHIP8.V[opcode->y];
+                    sum = CHIP8.V[opcode->x] + CHIP8.V[opcode->y];
+                    CHIP8.V[opcode->x] = sum;
 
                     if ( sum > 0xFF ) {
                         CHIP8.V[0xF] = 1;
+                    } else {
+                        CHIP8.V[0xF] = 0;
                     }
-                    CHIP8.V[opcode->x] = sum;
                     break;
                 case 0x5:
-                    CHIP8.V[0xF] = 0;
+                    carry = CHIP8.V[opcode->x] >= CHIP8.V[opcode->y];
 
-                    if ( CHIP8.V[opcode->x] > CHIP8.V[opcode->y] ) {
-                        CHIP8.V[0xF] = 1;
-                    }
                     CHIP8.V[opcode->x] -= CHIP8.V[opcode->y];
+                    CHIP8.V[0xF] = carry;
                     break;
                 case 0x6:
-                    CHIP8.V[0xF] = ( CHIP8.V[opcode->x] & 0x1 );
-
+                    carry = CHIP8.V[opcode->y] & 1;
                     CHIP8.V[opcode->x] >>= 1;
+
+                    CHIP8.V[0xF] = carry;
                     break;
                 case 0x7:
-                    CHIP8.V[0xF] = 0;
-
-                    if ( CHIP8.V[opcode->y] > CHIP8.V[opcode->x] ) {
-                        CHIP8.V[0xF] = 1;
-                    }
+                    carry = CHIP8.V[opcode->y] > CHIP8.V[opcode->x];
 
                     CHIP8.V[opcode->x] = CHIP8.V[opcode->y] - CHIP8.V[opcode->x];
+                    CHIP8.V[0xF] = carry;
                     break;
                 case 0xE:
-                    CHIP8.V[0xF] = ( CHIP8.V[opcode->x] & 0x80 );
-
+                    carry = (CHIP8.V[opcode->x] & 0x80 ) >> 7;
                     CHIP8.V[opcode->x] <<= 1;
+
+                    CHIP8.V[0xF] = carry;
                     break;
             }
 
@@ -313,7 +313,7 @@ int executeOpcode( opcode_t *opcode ) {
     }
 
 
-    CHIP8.PC += 2;
+    // CHIP8.PC += 2;
     return 0;
 }
 
