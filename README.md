@@ -1,11 +1,9 @@
 # My own Chip-8 Emulator 🖥
 
 ## The Project 💡
-> - 🏫 - This Chip-8 Emulator is a school project for my third year of study in computer science
-    > science in the EPTM which is a computer science school in Switzerland.
-> - 👩‍💻 - The project is built with the C programming language using SDL/2 as a graphical
-    > library.
-> - 🦁 - Developed using CLion
+> - 🏫 - This Chip-8 Emulator is a school project for my third year of study in computer science in the EPTM which is a computer science school in Switzerland.
+> - 💻 - The project is developed using the C programming language using SDL/2 as a graphics library.
+> - 🗿 - Using neovim & a makefile as editor and build tool
 
 
 ## Particulars of sale
@@ -20,26 +18,22 @@ Hitting V1.0 the Chip-8 Emulator must be able to display logs, registers, memory
 The objective is to show the user the processes happening inside of a computer.
 ```
 
-### Cheats 🚀
-```txt
-In case of advance on the planning, cheats are going to be added. For example the ability to edit
-values directly into the registers and memory. The point in that is giving more hp or power to the
-player. 
+## Build 🏗️
+```shell
+# Build for debian based Linux
+
+# just in case
+sudo apt install git
+sudo apt install gcc
+sudo apt install make
+
+sudo apt install libsdl2-dev
+git clone https://github.com/xZORNYx/CHIP8_Emulator_in_C.git
+cd CHIP8_Emulator_in_C
+make
+./chip8 programs/Games/breakout.ch8
+# Edit the path to boot on a different program
 ```
-
-
-## Download ⬇
-- 📂 - Download source code with git clone "ProjectUrl"
-
-- 📚 - Download the libraries [SDL/2](https://github.com/libsdl-org/SDL/releases/tag/release-2.28.3).
-
-- 🏗 - Project built with [CMake](https://cmake.org)
-
-- 🚧 You need to edit the **CMakeLists.txt** file
-
-
-
-
 
 ## Help and Sources 🪐
 - The wikipedia [Chip-8](https://en.wikipedia.org/wiki/CHIP-8) page
