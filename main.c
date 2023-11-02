@@ -1,13 +1,13 @@
-#include <SDL.h>
+#include <SDL2/SDL.h>
 
-#include "display.h"
-#include "keyboard.h"
-#include "cpu.h"
+#include "src/Display/display.h"
+#include "src/Keyboard/keyboard.h"
+#include "src/cpu/cpu.h"
 
 
 int initProgram( char *rom ) {
     initKeyboard( );
-    initDisplay( 20 );
+    initDisplay( 40 );
     initCPU( );
 
     loadSpritesIntoMemory( );

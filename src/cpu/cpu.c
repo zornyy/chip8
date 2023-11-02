@@ -5,14 +5,14 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include <SDL.h>
+#include <SDL2/SDL.h>
 #include <stdbool.h>
 #include <time.h>
-#include <windows.h>
+// #include <windows.h>
 
-#include "cpu.h"
-#include "display.h"
-#include "keyboard.h"
+#include "../cpu/cpu.h"
+#include "../Display/display.h"
+#include "../Keyboard/keyboard.h"
 
 int sum;
 int carry;

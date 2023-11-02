@@ -2,7 +2,7 @@
 // Created by Zorny on 07.09.2023.
 //
 
-#include "SDL.h"
+#include "SDL2/SDL.h"
 #include "stack.h"
 #include <stdbool.h>
 

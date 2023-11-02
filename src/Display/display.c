@@ -1,10 +1,10 @@
-#include <SDL.h>
+#include <SDL2/SDL.h>
 #include <stdbool.h>
 
-#include "stack.h"
-#include "cpu.h"
-#include "display.h"
-#include "keyboard.h"
+#include "../Stack/stack.h"
+#include "../cpu/cpu.h"
+#include "../Display/display.h"
+#include "../Keyboard/keyboard.h"
 
 
 // SDL Utility Variables

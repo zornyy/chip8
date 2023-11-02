@@ -1,3 +1,7 @@
 cmake-build-debug/
 testing/
 .idea/
+
+*.o
+chip8
+

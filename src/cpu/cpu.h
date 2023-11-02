@@ -6,7 +6,7 @@
 #define ALEXZORN_CHIP8_CPU_H
 
 #include <stdint.h>
-#include <stack.h>
+#include "../Stack/stack.h"
 
 typedef struct {
     uint16_t content;
