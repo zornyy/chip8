@@ -1,18 +1,21 @@
 #include <SDL2/SDL.h>
+#include <SDL2/SDL_ttf.h>
 #include <stdbool.h>
 
 #include "../Stack/stack.h"
 #include "../cpu/cpu.h"
 #include "../Display/display.h"
+#include "../debug/debug.h"
 #include "../Keyboard/keyboard.h"
 
 
-// SDL Utility Variables
+
+// SDL Utility Variables  
 SDL_Window *window;
 SDL_Renderer *renderer;
+SDL_Renderer *debugRenderer;
 
 SDL_Rect drawingRect;
-
 
 // Framerate variables
 const int FPS = 60;
@@ -95,8 +98,11 @@ void initDisplay( int pixelSize ) {
     SDL_Init( SDL_INIT_EVERYTHING );
     pxSize = pixelSize;
     drawingRect.h = pixelSize - 1, drawingRect.w = pixelSize - 1;
-    width = pixelSize * 64, height = pixelSize * 32;
-
+    // Adding proportional size on each side so that we have space to display the logs
+    width = pixelSize * 64 + pixelSize * 30, height = pixelSize * 32 + pixelSize * 25;
+    
+    // init debug display
+    initDebug( pixelSize, 25, 30 );
 
     // init screen matrix
     for ( int x = 0; x < 64; x++ ) {
@@ -109,15 +115,8 @@ void initDisplay( int pixelSize ) {
 }
 
 void programCycle( ) {
-    // clearDisplay( );
+  cpuCycle( );
 
-
-    // Cycle actions
-    cpuCycle( );
-    // drawScreen( );
-
-
-    // resetBackground( );
 }
 
 int showWindow( ) {
@@ -133,6 +132,12 @@ int showWindow( ) {
         SDL_Log("Could not create renderer");
         return 1;
     }
+
+    debugRenderer = SDL_CreateRenderer( window, -1, 0 );
+    if ( NULL == renderer ) {
+    SDL_Log("Could not create debug renderer");
+    return 1;
+  }
 
 
     SDL_SetRenderDrawColor( renderer, 0, 0, 0, 255 );
@@ -163,7 +168,10 @@ int showWindow( ) {
 
         // Content of the program cycle
         programCycle( );
-
+        
+        displayDebugInfo( debugRenderer ); 
+        
+        // Display the buffer on the screen
         SDL_RenderPresent( renderer );
 
         // Fix the framerate

@@ -7,7 +7,8 @@
 
 int initProgram( char *rom ) {
     initKeyboard( );
-    initDisplay( 30 );
+    initDisplay( 25 );
+
     initCPU( );
 
     loadSpritesIntoMemory( );
