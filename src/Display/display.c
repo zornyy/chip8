@@ -13,7 +13,7 @@
 // SDL Utility Variables  
 SDL_Window *window;
 SDL_Renderer *renderer;
-SDL_Renderer *debugRenderer;
+// SDL_Renderer *debugRenderer;
 
 SDL_Rect drawingRect;
 
@@ -28,18 +28,12 @@ Uint64 frameTime;
 int screenState[64][32];
 
 
-
 // Display variables
 int width, height;
 int pxSize;
 
 void clearDisplay( ) {
     SDL_RenderClear( renderer );
-}
-
-void resetBackground( ) {
-    SDL_SetRenderDrawColor( renderer, 0, 0, 0, 255 );
-    SDL_RenderPresent( renderer );
 }
 
 void drawRect( ) {
@@ -96,11 +90,17 @@ void fixFramerate(  ) {
 
 void initDisplay( int pixelSize ) {
     SDL_Init( SDL_INIT_EVERYTHING );
+    if( TTF_Init( ) == -1 ) {
+      SDL_Log("Could not initialize TTF");
+    } else {
+      SDL_Log("TTF initialized");
+  }
     pxSize = pixelSize;
     drawingRect.h = pixelSize - 1, drawingRect.w = pixelSize - 1;
     // Adding proportional size on each side so that we have space to display the logs
     width = pixelSize * 64 + pixelSize * 30, height = pixelSize * 32 + pixelSize * 25;
     
+
     // init debug display
     initDebug( pixelSize, 25, 30 );
 
@@ -120,7 +120,13 @@ void programCycle( ) {
 }
 
 int showWindow( ) {
-    window = SDL_CreateWindow( "AlexZorn - Chip-8 Emulator", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, width, height, SDL_WINDOW_ALLOW_HIGHDPI );
+    window = SDL_CreateWindow( 
+    "AlexZorn - Chip-8 Emulator", 
+    SDL_WINDOWPOS_UNDEFINED, 
+    SDL_WINDOWPOS_UNDEFINED, 
+    width, height, 
+    SDL_WINDOW_ALLOW_HIGHDPI );
+    
     if ( NULL == window )
     {
         SDL_Log("Could not create window");
@@ -132,12 +138,6 @@ int showWindow( ) {
         SDL_Log("Could not create renderer");
         return 1;
     }
-
-    debugRenderer = SDL_CreateRenderer( window, -1, 0 );
-    if ( NULL == renderer ) {
-    SDL_Log("Could not create debug renderer");
-    return 1;
-  }
 
 
     SDL_SetRenderDrawColor( renderer, 0, 0, 0, 255 );
@@ -166,11 +166,11 @@ int showWindow( ) {
             }
         }
 
+        displayDebugInfo( renderer );
+
         // Content of the program cycle
         programCycle( );
-        
-        displayDebugInfo( debugRenderer ); 
-        
+
         // Display the buffer on the screen
         SDL_RenderPresent( renderer );
 
