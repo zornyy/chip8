@@ -167,6 +167,7 @@ int showWindow( ) {
         }
 
         displayDebugInfo( renderer );
+        drawPerformances( renderer, frameTime, FPS ); 
 
         // Content of the program cycle
         programCycle( );

@@ -15,8 +15,10 @@ SDL_Rect textArea;
 SDL_Surface* textSurface;
 SDL_Texture* textTexture;
 SDL_Color White = {255, 255, 255};
+SDL_Color Green = {0, 255, 0};
 TTF_Font* nerdFont;
 
+SDL_Rect memoryRect;
 
 // Initialization FUNCTION
 void initDebug( int pxSize, int sizeH, int sizeV ) {
@@ -26,7 +28,9 @@ void initDebug( int pxSize, int sizeH, int sizeV ) {
   outlines.x = 0, outlines.y = 0, outlines.w = pxSize * 64, outlines.h = pxSize * 32;
   vDebug.x = pxSize * 64, vDebug.y = 0, vDebug.w = pxSize * sizeV, vDebug.h = pxSize * 32;
   hDebug.x = 0, hDebug.y = pxSize * 32, hDebug.w = pxSize * ( 64 + sizeV ), hDebug.h = pxSize * sizeH;
-  
+ 
+  memoryRect.x = pxSize * 3, memoryRect.y = pxSize * 35, memoryRect.w = pxSize * 5, memoryRect.h = pxSize * 15;
+
   // Setting up the variables for SDL_ttf
   nerdFont = TTF_OpenFont( "./src/fonts/JetBrainsMonoNL-Medium.ttf", 64 );
   if ( !nerdFont ) {
@@ -68,31 +72,75 @@ void drawText( t_Text *text, SDL_Renderer *renderer ) {
   SDL_DestroyTexture( textTexture );
 }
 
-void createRegisterString( char** str, int i ) {
-  int length = snprintf( NULL, 0, "Register %d = %x", i, CHIP8.V[i] );
-  *str = ( char* )malloc( length + 1 );
-}
+void displayRegisters( SDL_Renderer *renderer ) {
+  
+  // initializing length utility variable
+  int length;
 
-void displayRegister( SDL_Renderer *renderer ) {
-  char* registerString = "Registers:";
-  t_Text registerText = {registerString, pixelSize * 67, pixelSize * 2, pixelSize * 3, White, nerdFont };
+  // Display registers title
+  char* registerString = "Registers & Memory :";
+  t_Text registerText = {registerString, pixelSize * 66, pixelSize * 2, pixelSize * 3, White, nerdFont };
   drawText( &registerText, renderer );
-
+  
+  // Display all 16 registers Value
   for ( int i = 0; i < 16; i++ ) {
     char* Rstr;
-    int length = snprintf(NULL, 0, "Register %d = %x", i, CHIP8.V[i] );
+    length = snprintf(NULL, 0, "Register %d = %x", i, CHIP8.V[i] );
     Rstr = ( char* )malloc( length + 1 );
     sprintf( Rstr, "Register %d = %x", i, CHIP8.V[i] );
 
-    t_Text Rtext = {Rstr, pixelSize * 67, pixelSize * 6 + 1.5 * i * pixelSize, pixelSize * 1.5, White, nerdFont};
+    t_Text Rtext = {Rstr, pixelSize * 66, pixelSize * 6 + 1.5 * i * pixelSize, pixelSize * 1.5, White, nerdFont};
     drawText( &Rtext, renderer );
     free( Rstr );
   }
+  
+  // Display PC 
+  char* PCstr;
+  length = snprintf( NULL,0, "PC = %x", CHIP8.PC );
+  PCstr = ( char* )malloc( length + 1 );
+  sprintf( PCstr, "PC = %x", CHIP8.PC );
+
+  t_Text PCtext = {PCstr, pixelSize * 83, pixelSize * 6, pixelSize * 2, White, nerdFont};
+  drawText( &PCtext, renderer );
+  free( PCstr );
+
+  // Display I value
+  char* Istr;
+  length = snprintf( NULL, 0, "I = %x", CHIP8.I );
+  Istr = ( char* )malloc( length + 1 );
+  sprintf( Istr, "I = %x", CHIP8.I );
+
+  t_Text Itext = {Istr, pixelSize * 83, pixelSize * 9, pixelSize * 2, White, nerdFont};
+  drawText( &Itext, renderer );
+  free( Istr );
+}
+
+void drawPerformances( SDL_Renderer* renderer, int frameTime, int targetFPS ) {
+  // Display FPS & current load on the virtual CPU
+  int fps = 60;
+  if ( frameTime > 1000 / targetFPS ) {
+    fps = 1000 / frameTime;
+  }
+
+  char* FPSstr;
+  int length = snprintf( NULL, 0, "FPS = %d", fps );
+  FPSstr = ( char* )malloc( length + 1 );
+  sprintf( FPSstr, "FPS = %d", fps );
+
+  t_Text FPStext = {FPSstr, pixelSize * 83, pixelSize * 28, pixelSize * 2, Green, nerdFont};
+  drawText( &FPStext, renderer );
+  free( FPSstr );
+}
+
+void drawMemory( SDL_Renderer* renderer ) {
+  SDL_SetRenderDrawColor( renderer, 255, 255, 255, SDL_ALPHA_OPAQUE );
+  SDL_RenderDrawRect( renderer, &memoryRect );
 }
 
 // PUBLIC FUNTION
 void displayDebugInfo( SDL_Renderer *renderer ) {
   clearDebugScreen( renderer );
   drawOutlines( renderer );
-  displayRegister( renderer );
+  displayRegisters( renderer );
+  drawMemory( renderer );
 }
