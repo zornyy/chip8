@@ -28,7 +28,7 @@ sudo apt install gcc
 sudo apt install make
 
 sudo apt install libsdl2-dev
-git clone https://github.com/xZORNYx/CHIP8_Emulator_in_C.git
+git clone https://github.com/xZORNYx/chip8.git
 cd CHIP8_Emulator_in_C
 make
 ./chip8 programs/Games/breakout.ch8
