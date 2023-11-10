@@ -68,14 +68,26 @@ void drawText( t_Text *text, SDL_Renderer *renderer ) {
   SDL_DestroyTexture( textTexture );
 }
 
-void allocateStringPointer( char** str, int i ) {
-
+void createRegisterString( char** str, int i ) {
+  int length = snprintf( NULL, 0, "Register %d = %x", i, CHIP8.V[i] );
+  *str = ( char* )malloc( length + 1 );
 }
 
 void displayRegister( SDL_Renderer *renderer ) {
   char* registerString = "Registers:";
   t_Text registerText = {registerString, pixelSize * 67, pixelSize * 2, pixelSize * 3, White, nerdFont };
   drawText( &registerText, renderer );
+
+  for ( int i = 0; i < 16; i++ ) {
+    char* Rstr;
+    int length = snprintf(NULL, 0, "Register %d = %x", i, CHIP8.V[i] );
+    Rstr = ( char* )malloc( length + 1 );
+    sprintf( Rstr, "Register %d = %x", i, CHIP8.V[i] );
+
+    t_Text Rtext = {Rstr, pixelSize * 67, pixelSize * 6 + 1.5 * i * pixelSize, pixelSize * 1.5, White, nerdFont};
+    drawText( &Rtext, renderer );
+    free( Rstr );
+  }
 }
 
 // PUBLIC FUNTION
