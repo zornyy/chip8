@@ -16,9 +16,12 @@ SDL_Surface* textSurface;
 SDL_Texture* textTexture;
 SDL_Color White = {255, 255, 255};
 SDL_Color Green = {0, 255, 0};
+SDL_Color Red = {255, 0, 0};
+SDL_Color Blue = {0, 0, 255};
 TTF_Font* nerdFont;
 
 SDL_Rect memoryRect;
+SDL_Rect PCrep;
 
 // Initialization FUNCTION
 void initDebug( int pxSize, int sizeH, int sizeV ) {
@@ -29,7 +32,8 @@ void initDebug( int pxSize, int sizeH, int sizeV ) {
   vDebug.x = pxSize * 64, vDebug.y = 0, vDebug.w = pxSize * sizeV, vDebug.h = pxSize * 32;
   hDebug.x = 0, hDebug.y = pxSize * 32, hDebug.w = pxSize * ( 64 + sizeV ), hDebug.h = pxSize * sizeH;
  
-  memoryRect.x = pxSize * 3, memoryRect.y = pxSize * 35, memoryRect.w = pxSize * 5, memoryRect.h = pxSize * 15;
+  memoryRect.x = pxSize * 3, memoryRect.y = pxSize * 35, memoryRect.w = pxSize * 5, memoryRect.h = pxSize * 20;
+  PCrep.x = pxSize * 8.5, PCrep.y = 0, PCrep.w = pxSize * 1, PCrep.h = pxSize * 0.25;
 
   // Setting up the variables for SDL_ttf
   nerdFont = TTF_OpenFont( "./src/fonts/JetBrainsMonoNL-Medium.ttf", 64 );
@@ -96,11 +100,11 @@ void displayRegisters( SDL_Renderer *renderer ) {
   
   // Display PC 
   char* PCstr;
-  length = snprintf( NULL,0, "PC = %x", CHIP8.PC );
+  length = snprintf( NULL,0, "PC = %d", CHIP8.PC );
   PCstr = ( char* )malloc( length + 1 );
-  sprintf( PCstr, "PC = %x", CHIP8.PC );
+  sprintf( PCstr, "PC = %d", CHIP8.PC );
 
-  t_Text PCtext = {PCstr, pixelSize * 83, pixelSize * 6, pixelSize * 2, White, nerdFont};
+  t_Text PCtext = {PCstr, pixelSize * 83, pixelSize * 6, pixelSize * 2, Red, nerdFont};
   drawText( &PCtext, renderer );
   free( PCstr );
 
@@ -110,7 +114,7 @@ void displayRegisters( SDL_Renderer *renderer ) {
   Istr = ( char* )malloc( length + 1 );
   sprintf( Istr, "I = %x", CHIP8.I );
 
-  t_Text Itext = {Istr, pixelSize * 83, pixelSize * 9, pixelSize * 2, White, nerdFont};
+  t_Text Itext = {Istr, pixelSize * 83, pixelSize * 9, pixelSize * 2, Red, nerdFont};
   drawText( &Itext, renderer );
   free( Istr );
 }
@@ -135,6 +139,9 @@ void drawPerformances( SDL_Renderer* renderer, int frameTime, int targetFPS ) {
 void drawMemory( SDL_Renderer* renderer ) {
   SDL_SetRenderDrawColor( renderer, 255, 255, 255, SDL_ALPHA_OPAQUE );
   SDL_RenderDrawRect( renderer, &memoryRect );
+  PCrep.y = ( pixelSize * 30 ) + CHIP8.PC / pixelSize * 20; 
+  SDL_SetRenderDrawColor( renderer, 0, 255, 0, SDL_ALPHA_OPAQUE );
+  SDL_RenderFillRect( renderer, &PCrep );
 }
 
 // PUBLIC FUNTION
