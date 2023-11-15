@@ -28,8 +28,9 @@ sudo apt install gcc
 sudo apt install make
 
 sudo apt install libsdl2-dev
+sudo apt install libsdl2-ttf-dev
 git clone https://github.com/xZORNYx/chip8.git
-cd CHIP8_Emulator_in_C
+cd chip8
 make
 ./chip8 programs/Games/breakout.ch8
 # Edit the path to boot on a different program

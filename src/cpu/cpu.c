@@ -274,7 +274,7 @@ int executeOpcode( opcode_t *opcode ) {
                     break;
                 case 0x0A:
                     // TODO: Pause until keypress instruction
-                    CHIP8.paused = true;
+                    CHIP8.pauseRegister = opcode->x;
                     SDL_Log("paused");
                     break;
                 case 0x15:
