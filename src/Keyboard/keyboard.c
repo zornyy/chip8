@@ -92,9 +92,10 @@ void pressKey( int keyCode ) {
           break;
     }
 
-  if ( CHIP8.paused > 15 ) {
+  if ( CHIP8.paused ) {
     CHIP8.V[CHIP8.pauseRegister] = keyValue;
     CHIP8.paused = false;
+    SDL_Log("Unpaused chip8 execution");
   }
 }
 
