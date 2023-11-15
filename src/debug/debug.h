@@ -16,6 +16,6 @@ void initDebug( int pxSize, int sizeH, int sizeV );
 void displayDebugInfo( SDL_Renderer *renderer );
 
 void drawPerformances( SDL_Renderer* renderer, int frameTime, int targetFPS );
- 
+
 
 #endif //ALEXZORN_DEBUG_H

@@ -18,6 +18,7 @@ int sum;
 int carry;
 
 chip8_t CHIP8;
+opcode_t opcode;
 
 program Program;
 
@@ -341,7 +342,6 @@ void cpuCycle( ) {
             CHIP8.opcodesToExecute --;
           }
           
-          opcode_t opcode;
           setOpcodeValues( &opcode );
 
           // Do not execute opcode if out of the program

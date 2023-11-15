@@ -39,6 +39,7 @@ typedef struct {
 
 // Global Variables
 extern chip8_t CHIP8;
+extern opcode_t opcode;
 
 /*
  * Function initializes the CPU values for program start
