@@ -1,4 +1,5 @@
 #include <string.h>
+#include <stdint.h>
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_ttf.h>
 
@@ -87,16 +88,16 @@ void displayRegisters( SDL_Renderer *renderer ) {
   drawText( &registerText, renderer );
   
   // Display all 16 registers Value
+  char* Rstr;
   for ( int i = 0; i < 16; i++ ) {
-    char* Rstr;
-    length = snprintf(NULL, 0, "Register %d = %x", i, CHIP8.V[i] );
+    length = snprintf( NULL, 0, "Register %d = %d", i, CHIP8.V[i] );
     Rstr = ( char* )malloc( length + 1 );
-    sprintf( Rstr, "Register %d = %x", i, CHIP8.V[i] );
+    sprintf( Rstr, "Register %d = %d", i, CHIP8.V[i] );
 
-    t_Text Rtext = {Rstr, pixelSize * 66, pixelSize * 6 + 1.5 * i * pixelSize, pixelSize * 1.5, White, nerdFont};
-    drawText( &Rtext, renderer );
-    free( Rstr );
+    t_Text myText = {Rstr, pixelSize * 67, pixelSize * 6 + 1.5 * i* pixelSize, pixelSize * 1.5, White, nerdFont};
+    drawText( &myText, renderer );
   }
+  free( Rstr );
   
   // Display PC 
   char* PCstr;
