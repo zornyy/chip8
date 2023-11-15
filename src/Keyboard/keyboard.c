@@ -90,6 +90,12 @@ void pressKey( int keyCode ) {
           keyboardState[15] = true;
           keyValue = 15;
           break;
+        case SDLK_SPACE :
+          CHIP8.stepMode = !CHIP8.stepMode;
+        case SDLK_k :
+          CHIP8.opcodesToExecute += 10;
+        case SDLK_j :
+          CHIP8.opcodesToExecute += 1;
     }
 
   if ( CHIP8.paused ) {

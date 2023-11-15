@@ -111,9 +111,9 @@ void displayRegisters( SDL_Renderer *renderer ) {
 
   // Display I value
   char* Istr;
-  length = snprintf( NULL, 0, "I = %x", CHIP8.I );
+  length = snprintf( NULL, 0, "I = %d", CHIP8.I );
   Istr = ( char* )malloc( length + 1 );
-  sprintf( Istr, "I = %x", CHIP8.I );
+  sprintf( Istr, "I = %d", CHIP8.I );
 
   t_Text Itext = {Istr, pixelSize * 83, pixelSize * 9, pixelSize * 2, Red, nerdFont};
   drawText( &Itext, renderer );
@@ -137,12 +137,14 @@ void drawPerformances( SDL_Renderer* renderer, int frameTime, int targetFPS ) {
   free( FPSstr );
 }
 
+void displayKeyInfo( SDL_Renderer *renderer ) {
+  char* keyboardInfo = "Keyboard debug keys :";
+  t_Text TextKeyboardInfo = {keyboardInfo, pixelSize * 2, pixelSize * 34, pixelSize * 2, Green, nerdFont};
+  drawText( &TextKeyboardInfo, renderer );
+}
+
 void drawMemory( SDL_Renderer* renderer ) {
-  SDL_SetRenderDrawColor( renderer, 255, 255, 255, SDL_ALPHA_OPAQUE );
-  SDL_RenderDrawRect( renderer, &memoryRect );
-  PCrep.y = ( pixelSize * 30 ) + CHIP8.PC / pixelSize * 20; 
-  SDL_SetRenderDrawColor( renderer, 0, 255, 0, SDL_ALPHA_OPAQUE );
-  SDL_RenderFillRect( renderer, &PCrep );
+
 }
 
 // PUBLIC FUNTION
@@ -150,5 +152,5 @@ void displayDebugInfo( SDL_Renderer *renderer ) {
   clearDebugScreen( renderer );
   drawOutlines( renderer );
   displayRegisters( renderer );
-  drawMemory( renderer );
+  displayKeyInfo( renderer );
 }

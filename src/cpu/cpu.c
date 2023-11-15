@@ -32,6 +32,8 @@ void initCPU( ) {
     CHIP8.delay_timer = 0;
     CHIP8.sound_timer = 10;
     CHIP8.paused = false;
+    CHIP8.stepMode = false;
+    CHIP8.opcodesToExecute = 0;
     CHIP8.stack.top = 0;
 
     srand(time(0));
@@ -333,19 +335,25 @@ void updateTimers( ) {
 
 void cpuCycle( ) {
     for ( int i = 0; i < CHIP8.speed; i++ ) {
-        if ( !CHIP8.paused ) {
-            opcode_t opcode;
-            setOpcodeValues( &opcode );
+      if ( !CHIP8.paused ) {
+        if ( !CHIP8.stepMode || CHIP8.opcodesToExecute > 0 ) {
+          if ( CHIP8.stepMode ) {
+            CHIP8.opcodesToExecute --;
+          }
+          
+          opcode_t opcode;
+          setOpcodeValues( &opcode );
 
-            // Do not execute opcode if out of the program
-            if ( CHIP8.PC <= Program.size + 0x200 - 1 && CHIP8.PC >= 0x200 ) {
-                executeOpcode( &opcode );
-            }
+          // Do not execute opcode if out of the program
+          if ( CHIP8.PC <= Program.size + 0x200 - 1 && CHIP8.PC >= 0x200 ) {
+            executeOpcode( &opcode );
+          }
         }
+      }
     }
 
     if ( !CHIP8.paused ) {
-        updateTimers();
+        updateTimers( );
     }
     playSound( );
 }

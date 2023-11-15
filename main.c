@@ -7,7 +7,7 @@
 
 int initProgram( char *rom ) {
     initKeyboard( );
-    initDisplay( 20 );
+    initDisplay( 25 );
 
     initCPU( );
 

@@ -27,6 +27,8 @@ typedef struct {
     uint8_t sound_timer;
     _Bool paused;
     uint8_t pauseRegister; 
+    _Bool stepMode;
+    int opcodesToExecute;
     int speed;
 } chip8_t;
 
