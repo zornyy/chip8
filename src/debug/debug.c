@@ -138,21 +138,26 @@ void drawPerformances( SDL_Renderer* renderer, int frameTime, int targetFPS ) {
 }
 
 void displayKeyInfo( SDL_Renderer *renderer ) {
-  char* keyboardInfo = "Keyboard debug keys :"; 
+  char* keyboardInfo = "Keyboard debug keys :";
+  char* pauseStr = "Space -> enter / exit the step by step mode";
   char* forwardStr = "J -> Move to the next instruction";
   char* forward10Str = "K -> Move forward 10 instructions";
 
   t_Text TextKeyboardInfo = {keyboardInfo, pixelSize * 2, pixelSize * 34, pixelSize * 2, Green, nerdFont};
   drawText( &TextKeyboardInfo, renderer );
 
-  TextKeyboardInfo.text = forwardStr;
+  TextKeyboardInfo.text = pauseStr;
   TextKeyboardInfo.y = pixelSize * 37;
   TextKeyboardInfo.fontSize = pixelSize * 1.5;
   TextKeyboardInfo.color = White;
   drawText( &TextKeyboardInfo, renderer );
 
-  TextKeyboardInfo.text = forward10Str;
+  TextKeyboardInfo.text = forwardStr;
   TextKeyboardInfo.y = pixelSize * 39;
+  drawText( &TextKeyboardInfo, renderer );
+
+  TextKeyboardInfo.text = forward10Str;
+  TextKeyboardInfo.y = pixelSize * 41;
   drawText( &TextKeyboardInfo, renderer );
 
 }
@@ -162,7 +167,7 @@ void drawCurrentOpcode( SDL_Renderer* renderer ) {
   int length = snprintf( NULL, 0, "Current opcode: %x", opcode.content );
   opcodeStr = ( char* )malloc( length + 1 );
   sprintf( opcodeStr, "Current opcode: %x", opcode.content );
-  t_Text opcodeText = {opcodeStr, pixelSize * 2, pixelSize * 43, pixelSize * 1.5, Red, nerdFont};
+  t_Text opcodeText = {opcodeStr, pixelSize * 2, pixelSize * 44, pixelSize * 1.5, Red, nerdFont};
   drawText( &opcodeText, renderer );
   free( opcodeStr );
 
@@ -170,7 +175,7 @@ void drawCurrentOpcode( SDL_Renderer* renderer ) {
   opcodeStr = ( char* )malloc( length + 1 );
   sprintf( opcodeStr, "Opcode nnn: %x", opcode.nnn );
   opcodeText.text = opcodeStr;
-  opcodeText.y = 45 * pixelSize;
+  opcodeText.y = 46 * pixelSize;
   drawText( &opcodeText, renderer );
   free( opcodeStr );
 
@@ -178,7 +183,7 @@ void drawCurrentOpcode( SDL_Renderer* renderer ) {
   opcodeStr = ( char* )malloc( length + 1 );
   sprintf( opcodeStr, "Opcode kk: %x", opcode.kk );
   opcodeText.text = opcodeStr;
-  opcodeText.y = 47 * pixelSize;
+  opcodeText.y = 48 * pixelSize;
   drawText( &opcodeText, renderer );
   free( opcodeStr );
 
@@ -186,7 +191,7 @@ void drawCurrentOpcode( SDL_Renderer* renderer ) {
   opcodeStr = ( char* )malloc( length + 1 );
   sprintf( opcodeStr, "Opcode x: %x", opcode.x );
   opcodeText.text = opcodeStr;
-  opcodeText.y = 49 * pixelSize;
+  opcodeText.y = 50 * pixelSize;
   drawText( &opcodeText, renderer );
   free( opcodeStr );
 
@@ -194,7 +199,7 @@ void drawCurrentOpcode( SDL_Renderer* renderer ) {
   opcodeStr = ( char* )malloc( length + 1 );
   sprintf( opcodeStr, "Opcode y: %x", opcode.y );
   opcodeText.text = opcodeStr;
-  opcodeText.y = 51 * pixelSize;
+  opcodeText.y = 52 * pixelSize;
   drawText( &opcodeText, renderer );
   free( opcodeStr );
 
@@ -202,7 +207,7 @@ void drawCurrentOpcode( SDL_Renderer* renderer ) {
   opcodeStr = ( char* )malloc( length + 1 );
   sprintf( opcodeStr, "Opcode n: %x", opcode.n );
   opcodeText.text = opcodeStr;
-  opcodeText.y = 53 * pixelSize;
+  opcodeText.y = 54 * pixelSize;
   drawText( &opcodeText, renderer );
   free( opcodeStr );
 }
