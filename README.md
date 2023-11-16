@@ -18,6 +18,22 @@ Hitting V1.0 the Chip-8 Emulator must be able to display logs, registers, memory
 The objective is to show the user the processes happening inside of a computer.
 ```
 
+## Showcase of the project
+### Game of Breakout with the emulator
+![Breakout](./screenshots/Breakout.png)
+
+### Game of Breakout with the emulator
+![Missile](./screenshots/Missile.png)
+
+### Game of Breakout with the emulator
+![Pong](./screenshots/Pong.png)
+
+### Game of Breakout with the emulator
+![Connect 4](./screenshots/Connect4.png)
+
+### Game of Breakout with the emulator
+![Tic Tac Toe](./screenshots/Tictac.png)
+
 ## Build 🏗️
 ```shell
 # Build for debian based Linux

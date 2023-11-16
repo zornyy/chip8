@@ -5,6 +5,7 @@
 
 #include "debug.h"
 #include "../cpu/cpu.h"
+#include "../Stack/stack.h"
 
 int pixelSize;
 SDL_Rect outlines;
@@ -21,8 +22,13 @@ SDL_Color Red = {255, 0, 0};
 SDL_Color Blue = {0, 0, 255};
 TTF_Font* nerdFont;
 
-SDL_Rect memoryRect;
-SDL_Rect PCrep;
+SDL_Rect keypadRect;
+SDL_Surface* keypadSurface;
+SDL_Texture* keypadTexture;
+
+SDL_Rect logoRect;
+SDL_Surface* logoSurface;
+SDL_Texture* logoTexture;
 
 // Initialization FUNCTION
 void initDebug( int pxSize, int sizeH, int sizeV ) {
@@ -32,9 +38,15 @@ void initDebug( int pxSize, int sizeH, int sizeV ) {
   outlines.x = 0, outlines.y = 0, outlines.w = pxSize * 64, outlines.h = pxSize * 32;
   vDebug.x = pxSize * 64, vDebug.y = 0, vDebug.w = pxSize * sizeV, vDebug.h = pxSize * 32;
   hDebug.x = 0, hDebug.y = pxSize * 32, hDebug.w = pxSize * ( 64 + sizeV ), hDebug.h = pxSize * sizeH;
- 
-  memoryRect.x = pxSize * 3, memoryRect.y = pxSize * 35, memoryRect.w = pxSize * 5, memoryRect.h = pxSize * 20;
-  PCrep.x = pxSize * 8.5, PCrep.y = 0, PCrep.w = pxSize * 1, PCrep.h = pxSize * 0.25;
+  
+  keypadRect.x = pixelSize * 40, keypadRect.y = pixelSize * 37, keypadRect.h = pixelSize * 18, keypadRect.w = pixelSize * 18;
+  keypadSurface = SDL_LoadBMP( "./src/fonts/Keypad.bmp" );
+
+  logoRect.x = pixelSize * ( 61 + sizeV );
+  logoRect.y = pixelSize * ( 29 + sizeH );
+  logoRect.w = pixelSize * 2.5;
+  logoRect.h = pixelSize * 2.5;
+  logoSurface = SDL_LoadBMP( "./src/fonts/logo.bmp" );
 
   // Setting up the variables for SDL_ttf
   nerdFont = TTF_OpenFont( "./src/fonts/JetBrainsMonoNL-Medium.ttf", 64 );
@@ -164,56 +176,92 @@ void displayKeyInfo( SDL_Renderer *renderer ) {
 
 void drawCurrentOpcode( SDL_Renderer* renderer ) {
   char* opcodeStr;
-  int length = snprintf( NULL, 0, "Current opcode: %x", opcode.content );
+  int length = snprintf( NULL, 0, "Current opcode: %d", opcode.content );
   opcodeStr = ( char* )malloc( length + 1 );
-  sprintf( opcodeStr, "Current opcode: %x", opcode.content );
+  sprintf( opcodeStr, "Current opcode: %d", opcode.content );
   t_Text opcodeText = {opcodeStr, pixelSize * 2, pixelSize * 44, pixelSize * 1.5, Red, nerdFont};
   drawText( &opcodeText, renderer );
   free( opcodeStr );
 
-  length = snprintf( NULL, 0, "Opcode nnn: %x", opcode.nnn );
+  length = snprintf( NULL, 0, "Opcode nnn: %d", opcode.nnn );
   opcodeStr = ( char* )malloc( length + 1 );
-  sprintf( opcodeStr, "Opcode nnn: %x", opcode.nnn );
+  sprintf( opcodeStr, "Opcode nnn: %d", opcode.nnn );
   opcodeText.text = opcodeStr;
   opcodeText.y = 46 * pixelSize;
   drawText( &opcodeText, renderer );
   free( opcodeStr );
 
-  length = snprintf( NULL, 0, "Opcode kk: %x", opcode.kk );
+  length = snprintf( NULL, 0, "Opcode kk: %d", opcode.kk );
   opcodeStr = ( char* )malloc( length + 1 );
-  sprintf( opcodeStr, "Opcode kk: %x", opcode.kk );
+  sprintf( opcodeStr, "Opcode kk: %d", opcode.kk );
   opcodeText.text = opcodeStr;
   opcodeText.y = 48 * pixelSize;
   drawText( &opcodeText, renderer );
   free( opcodeStr );
 
-  length = snprintf( NULL, 0, "Opcode x: %x", opcode.x );
+  length = snprintf( NULL, 0, "Opcode x: %d", opcode.x );
   opcodeStr = ( char* )malloc( length + 1 );
-  sprintf( opcodeStr, "Opcode x: %x", opcode.x );
+  sprintf( opcodeStr, "Opcode x: %d", opcode.x );
   opcodeText.text = opcodeStr;
   opcodeText.y = 50 * pixelSize;
   drawText( &opcodeText, renderer );
   free( opcodeStr );
 
-  length = snprintf( NULL, 0, "Opcode y: %x", opcode.y );
+  length = snprintf( NULL, 0, "Opcode y: %d", opcode.y );
   opcodeStr = ( char* )malloc( length + 1 );
-  sprintf( opcodeStr, "Opcode y: %x", opcode.y );
+  sprintf( opcodeStr, "Opcode y: %d", opcode.y );
   opcodeText.text = opcodeStr;
   opcodeText.y = 52 * pixelSize;
   drawText( &opcodeText, renderer );
   free( opcodeStr );
 
-  length = snprintf( NULL, 0, "Opcode n: %x", opcode.n );
+  length = snprintf( NULL, 0, "Opcode n: %d", opcode.n );
   opcodeStr = ( char* )malloc( length + 1 );
-  sprintf( opcodeStr, "Opcode n: %x", opcode.n );
+  sprintf( opcodeStr, "Opcode n: %d", opcode.n );
   opcodeText.text = opcodeStr;
   opcodeText.y = 54 * pixelSize;
   drawText( &opcodeText, renderer );
   free( opcodeStr );
 }
 
-void drawMemory( SDL_Renderer* renderer ) {
+void drawKeyboard( SDL_Renderer* renderer ) {
+  char* StrKeypad = "Keypad :";
 
+  t_Text TitleKeypad = {StrKeypad, pixelSize * 40, pixelSize * 34, pixelSize * 2, Green, nerdFont};
+  drawText( &TitleKeypad, renderer );
+  keypadTexture = SDL_CreateTextureFromSurface( renderer, keypadSurface );
+  SDL_RenderCopy( renderer, keypadTexture, NULL, &keypadRect );
+  SDL_DestroyTexture( keypadTexture );
+}
+
+void drawStackInfo( SDL_Renderer* renderer ) {
+  char* stackStr = "Stack informations :";
+  t_Text stackText = {stackStr, pixelSize * 65, pixelSize * 34, pixelSize * 2, Green, nerdFont};
+  drawText( &stackText, renderer ); 
+
+  int length = snprintf( NULL, 0, "Stack top is at index %d of 16", top( &CHIP8.stack ) );
+  stackStr = ( char* )malloc( length + 1 );
+  sprintf( stackStr, "Stack top is at index %d of 16", top( &CHIP8.stack ) );
+  stackText.text = stackStr;
+  stackText.y = 37 * pixelSize;
+  stackText.color = White;
+  stackText.fontSize = 1.5 * pixelSize;
+  drawText( &stackText, renderer );
+  free( stackStr );
+
+  length = snprintf( NULL, 0, "Value on top of the stack: %d", CHIP8.stack.content[top( &CHIP8.stack )]);
+  stackStr = ( char* )malloc( length + 1 );
+  sprintf( stackStr, "Value on top of the stack: %d", CHIP8.stack.content[top( &CHIP8.stack )]);
+  stackText.text = stackStr;
+  stackText.y = 39 * pixelSize;
+  drawText( &stackText, renderer );
+  free( stackStr );
+}
+
+void drawLogo( SDL_Renderer* renderer ) {
+  logoTexture = SDL_CreateTextureFromSurface( renderer, logoSurface );
+  SDL_RenderCopy( renderer, logoTexture, NULL, &logoRect );
+  SDL_DestroyTexture( logoTexture );
 }
 
 // PUBLIC FUNTION
@@ -223,4 +271,7 @@ void displayDebugInfo( SDL_Renderer *renderer ) {
   displayRegisters( renderer );
   displayKeyInfo( renderer );
   drawCurrentOpcode( renderer );
+  drawKeyboard( renderer );
+  drawStackInfo( renderer );
+  drawLogo( renderer );
 }

@@ -128,16 +128,15 @@ int showWindow( ) {
     width, height, 
     SDL_WINDOW_ALLOW_HIGHDPI );
     
-    if ( NULL == window )
-    {
-        SDL_Log("Could not create window");
-        return 1;
+    if ( NULL == window ) {
+      SDL_Log("Could not create window");
+      return 1;
     }
 
-    renderer = SDL_CreateRenderer( window, -1, 0 );
+    renderer = SDL_CreateRenderer( window, -1, SDL_RENDERER_ACCELERATED );
     if ( NULL == renderer ) {
-        SDL_Log("Could not create renderer");
-        return 1;
+      SDL_Log("Could not create renderer");
+      return 1;
     }
 
 
