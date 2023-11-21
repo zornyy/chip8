@@ -129,7 +129,6 @@ int loadRom( char *ROM_PATH ) {
 }
 
 int executeOpcode( opcode_t *opcode ) {
-    SDL_Log( "Executing opcode %x", opcode->content );
 
     CHIP8.PC += 2;
 

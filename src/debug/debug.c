@@ -61,13 +61,6 @@ void initDebug( int pxSize, int sizeH, int sizeV ) {
 
 
 // Private functions
-void clearDebugScreen( SDL_Renderer *renderer ) {
-  SDL_SetRenderDrawColor( renderer, 0, 0, 0, SDL_ALPHA_OPAQUE );
-  SDL_RenderFillRect( renderer, &vDebug );
-  SDL_RenderFillRect( renderer, &hDebug );
-}
-
-
 void drawOutlines( SDL_Renderer *renderer ) {
   SDL_SetRenderDrawColor( renderer, 255, 255, 255, SDL_ALPHA_OPAQUE );
   SDL_RenderDrawRect( renderer, &outlines );
@@ -102,9 +95,9 @@ void displayRegisters( SDL_Renderer *renderer ) {
   // Display all 16 registers Value
   char* Rstr;
   for ( int i = 0; i < 16; i++ ) {
-    length = snprintf( NULL, 0, "Register %d = %d", i, CHIP8.V[i] );
+    length = snprintf( NULL, 0, "Register %d = %x", i, CHIP8.V[i] );
     Rstr = ( char* )malloc( length + 1 );
-    sprintf( Rstr, "Register %d = %d", i, CHIP8.V[i] );
+    sprintf( Rstr, "Register %d = %x", i, CHIP8.V[i] );
 
     t_Text myText = {Rstr, pixelSize * 67, pixelSize * 6 + 1.5 * i* pixelSize, pixelSize * 1.5, White, nerdFont};
     drawText( &myText, renderer );
@@ -176,32 +169,32 @@ void displayKeyInfo( SDL_Renderer *renderer ) {
 
 void drawCurrentOpcode( SDL_Renderer* renderer ) {
   char* opcodeStr;
-  int length = snprintf( NULL, 0, "Current opcode: %d", opcode.content );
+  int length = snprintf( NULL, 0, "Current opcode: %x", opcode.content );
   opcodeStr = ( char* )malloc( length + 1 );
-  sprintf( opcodeStr, "Current opcode: %d", opcode.content );
+  sprintf( opcodeStr, "Current opcode: %x", opcode.content );
   t_Text opcodeText = {opcodeStr, pixelSize * 2, pixelSize * 44, pixelSize * 1.5, Red, nerdFont};
   drawText( &opcodeText, renderer );
   free( opcodeStr );
 
-  length = snprintf( NULL, 0, "Opcode nnn: %d", opcode.nnn );
+  length = snprintf( NULL, 0, "Opcode nnn: %x", opcode.nnn );
   opcodeStr = ( char* )malloc( length + 1 );
-  sprintf( opcodeStr, "Opcode nnn: %d", opcode.nnn );
+  sprintf( opcodeStr, "Opcode nnn: %x", opcode.nnn );
   opcodeText.text = opcodeStr;
   opcodeText.y = 46 * pixelSize;
   drawText( &opcodeText, renderer );
   free( opcodeStr );
 
-  length = snprintf( NULL, 0, "Opcode kk: %d", opcode.kk );
+  length = snprintf( NULL, 0, "Opcode kk: %x", opcode.kk );
   opcodeStr = ( char* )malloc( length + 1 );
-  sprintf( opcodeStr, "Opcode kk: %d", opcode.kk );
+  sprintf( opcodeStr, "Opcode kk: %x", opcode.kk );
   opcodeText.text = opcodeStr;
   opcodeText.y = 48 * pixelSize;
   drawText( &opcodeText, renderer );
   free( opcodeStr );
 
-  length = snprintf( NULL, 0, "Opcode x: %d", opcode.x );
+  length = snprintf( NULL, 0, "Opcode x: %x", opcode.x );
   opcodeStr = ( char* )malloc( length + 1 );
-  sprintf( opcodeStr, "Opcode x: %d", opcode.x );
+  sprintf( opcodeStr, "Opcode x: %x", opcode.x );
   opcodeText.text = opcodeStr;
   opcodeText.y = 50 * pixelSize;
   drawText( &opcodeText, renderer );
@@ -209,15 +202,15 @@ void drawCurrentOpcode( SDL_Renderer* renderer ) {
 
   length = snprintf( NULL, 0, "Opcode y: %d", opcode.y );
   opcodeStr = ( char* )malloc( length + 1 );
-  sprintf( opcodeStr, "Opcode y: %d", opcode.y );
+  sprintf( opcodeStr, "Opcode y: %x", opcode.y );
   opcodeText.text = opcodeStr;
   opcodeText.y = 52 * pixelSize;
   drawText( &opcodeText, renderer );
   free( opcodeStr );
 
-  length = snprintf( NULL, 0, "Opcode n: %d", opcode.n );
+  length = snprintf( NULL, 0, "Opcode n: %x", opcode.n );
   opcodeStr = ( char* )malloc( length + 1 );
-  sprintf( opcodeStr, "Opcode n: %d", opcode.n );
+  sprintf( opcodeStr, "Opcode n: %x", opcode.n );
   opcodeText.text = opcodeStr;
   opcodeText.y = 54 * pixelSize;
   drawText( &opcodeText, renderer );
@@ -249,9 +242,9 @@ void drawStackInfo( SDL_Renderer* renderer ) {
   drawText( &stackText, renderer );
   free( stackStr );
 
-  length = snprintf( NULL, 0, "Value on top of the stack: %d", CHIP8.stack.content[top( &CHIP8.stack )]);
+  length = snprintf( NULL, 0, "Value on top of the stack: %x", CHIP8.stack.content[top( &CHIP8.stack )]);
   stackStr = ( char* )malloc( length + 1 );
-  sprintf( stackStr, "Value on top of the stack: %d", CHIP8.stack.content[top( &CHIP8.stack )]);
+  sprintf( stackStr, "Value on top of the stack: %x", CHIP8.stack.content[top( &CHIP8.stack )]);
   stackText.text = stackStr;
   stackText.y = 39 * pixelSize;
   drawText( &stackText, renderer );
@@ -266,7 +259,6 @@ void drawLogo( SDL_Renderer* renderer ) {
 
 // PUBLIC FUNTION
 void displayDebugInfo( SDL_Renderer *renderer ) {
-  clearDebugScreen( renderer );
   drawOutlines( renderer );
   displayRegisters( renderer );
   displayKeyInfo( renderer );

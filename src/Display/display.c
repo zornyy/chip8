@@ -33,8 +33,12 @@ int width, height;
 int pxSize;
 
 void clearDisplay( ) {
-  SDL_SetRenderDrawColor( renderer, 0, 0, 0, SDL_ALPHA_OPAQUE );
-  SDL_RenderClear( renderer );
+  // empty screen matrix
+  for ( int x = 0; x < 64; x++ ) {
+    for ( int y = 0; y < 32; y++ ) {
+      screenState[x][y] = 0;
+    }
+  }
 }
 
 void drawRect( ) {
@@ -47,10 +51,24 @@ void eraseRect( ) {
     SDL_RenderFillRect( renderer, &drawingRect );
 }
 
+void drawEmulatorScreen( ) {
+  for ( int x = 0; x < 64; x++ ) {
+    for ( int y = 0; y < 32; y++ ) {
+      if ( screenState[x][y] ) {
+
+        // Set the coordinates to draw the pixel
+        drawingRect.x = x * pxSize;
+        drawingRect.y = y * pxSize;
+
+        drawRect( );
+      }
+    }
+  }
+}
+
 int setPixel( int x, int y ) {
 
     // wrap the pixel on the other side of the screen if out display
-
 
     if ( x > 63 ) {
         x -= 64;
@@ -64,19 +82,15 @@ int setPixel( int x, int y ) {
         y += 32;
     }
 
-    // Set the coordinates to draw the pixel
-    drawingRect.x = x * pxSize;
-    drawingRect.y = y * pxSize;
-
     // update the screenState
     screenState[x][y] ^= 1;
 
     // Draw or erase the pixel
     if ( screenState[x][y] == 1 ) {
-        drawRect( );
-        return 0;
+      // drawRect( );
+      return 0;
     }
-    eraseRect( );
+    // eraseRect( );
     return 1;
 }
 
@@ -105,12 +119,7 @@ void initDisplay( int pixelSize ) {
     // init debug display
     initDebug( pixelSize, 25, 30 );
 
-    // init screen matrix
-    for ( int x = 0; x < 64; x++ ) {
-        for ( int y = 0; y < 32; y++ ) {
-            screenState[x][y] = 0;
-        }
-    }
+    clearDisplay( );  
 
     SDL_Log("Display initialized with 64x32px\n");
 }
@@ -166,11 +175,19 @@ int showWindow( ) {
             }
         }
 
-        displayDebugInfo( renderer );
-        drawPerformances( renderer, frameTime, FPS ); 
-
         // Content of the program cycle
         programCycle( );
+        
+        // Clear full screen
+        SDL_SetRenderDrawColor( renderer, 0, 0, 0, SDL_ALPHA_OPAQUE );
+        SDL_RenderClear( renderer ); 
+        
+        // Draw emulator screen
+        drawEmulatorScreen( );
+
+        // display debug infos
+        displayDebugInfo( renderer );
+        drawPerformances( renderer, frameTime, FPS ); 
 
         // Display the buffer on the screen
         SDL_RenderPresent( renderer );
