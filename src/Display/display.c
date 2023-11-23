@@ -32,6 +32,10 @@ int screenState[64][32];
 int width, height;
 int pxSize;
 
+/*
+ * Function sets every pixels of the
+ * screen State to 0 ( OFF )
+ */
 void clearDisplay( ) {
   // empty screen matrix
   for ( int x = 0; x < 64; x++ ) {
@@ -41,29 +45,50 @@ void clearDisplay( ) {
   }
 }
 
+/*
+ * Function renders <drawingRect> at it's 
+ * current position in the frame buffer
+ */ 
 void drawRect( ) {
-    SDL_SetRenderDrawColor( renderer, 222, 27, 199, 255);
+    SDL_SetRenderDrawColor( renderer, 222, 27, 199, 255); // Pink
     SDL_RenderFillRect( renderer, &drawingRect );
 }
 
-void eraseRect( ) {
-    SDL_SetRenderDrawColor( renderer, 0, 0, 0, 0);
-    SDL_RenderFillRect( renderer, &drawingRect );
-}
 
+/*
+ * Function loops through every element of the
+ * screen matrix which represents the state of
+ * every pixels and renders that pixel to the 
+ * frame buffer
+ */
 void drawEmulatorScreen( ) {
-  for ( int x = 0; x < 64; x++ ) {
-    for ( int y = 0; y < 32; y++ ) {
+  for ( int x = 0; x < 64; x++ ) { // rows
+    for ( int y = 0; y < 32; y++ ) { // cols
       if ( screenState[x][y] ) {
 
         // Set the coordinates to draw the pixel
         drawingRect.x = x * pxSize;
         drawingRect.y = y * pxSize;
-
+        
+        // Render rect
         drawRect( );
       }
     }
   }
+}
+
+
+/*
+* Function calculates and applies the
+* necessary delay to fix the framerate 
+* of the program
+*/
+void fixFramerate(  ) {
+    frameTime = SDL_GetTicks() - frameStart;
+
+    if ( frameDelay > frameTime ) {
+        SDL_Delay( frameDelay - frameTime );
+    }
 }
 
 int setPixel( int x, int y ) {
@@ -87,19 +112,9 @@ int setPixel( int x, int y ) {
 
     // Draw or erase the pixel
     if ( screenState[x][y] == 1 ) {
-      // drawRect( );
       return 0;
     }
-    // eraseRect( );
     return 1;
-}
-
-void fixFramerate(  ) {
-    frameTime = SDL_GetTicks() - frameStart;
-
-    if ( frameDelay > frameTime ) {
-        SDL_Delay( frameDelay - frameTime );
-    }
 }
 
 
@@ -129,6 +144,9 @@ void programCycle( ) {
 
 }
 
+/*
+* Function initializes and starts the main program loop
+*/
 int showWindow( ) {
     window = SDL_CreateWindow( 
     "AlexZorn - Chip-8 Emulator", 

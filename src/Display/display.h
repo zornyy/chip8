@@ -19,7 +19,7 @@ void initDisplay( int pixelSize );
 int showWindow( );
 
 /*
- *  This function sets a pixel to be ON
+ *  Function updates the screen state according to the pixel passed as argument
  *  ( int x ) => position X of the pixel
  *  ( int y ) => position Y of the pixel
  *  Returns: 1 if a pixel has been erased else, returns 0
