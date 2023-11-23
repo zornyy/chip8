@@ -136,57 +136,57 @@ int executeOpcode( opcode_t *opcode ) {
     switch ( opcode->content >> 12 ) {
         case 0x0:
             switch ( opcode->content ) {
-                case 0x00E0:
+                case 0x00E0: // 00E0 - CLS -> clear display
                     clearDisplay();
                     break;
-                case 0x00EE:
+                case 0x00EE: // 00EE - RET -> Return from subroutine
                     CHIP8.PC = pop( &CHIP8.stack );
                     break;
             }
             break;
-        case 0x1:
+        case 0x1: // 1nnn - JP addr -> set PC to nnn
             CHIP8.PC = opcode->nnn;
             break;
-        case 0x2:
+        case 0x2: // 2nnn - CALL addr -> call subroutine at nnn
             push( &CHIP8.stack, CHIP8.PC );
             CHIP8.PC = opcode->nnn;
             break;
-        case 0x3:
+        case 0x3: // 3xkk - SE Vx, byte -> Skip next if Vx = kk
             if ( CHIP8.V[opcode->x] == opcode->kk ) {
                 CHIP8.PC += 2;
             }
             break;
-        case 0x4:
+        case 0x4: // 4xkk - SNE Vx, byte -> Skip next if Vx != kk
             if ( CHIP8.V[opcode->x] != opcode->kk ) {
                 CHIP8.PC += 2;
             }
             break;
-        case 0x5:
+        case 0x5: // 5xy0 - SE Vx, Vy -> Skip next if Vx = Vy
             if ( CHIP8.V[opcode->x] == CHIP8.V[opcode->y] ) {
                 CHIP8.PC += 2;
             }
             break;
-        case 0x6:
+        case 0x6: // 6xkk - LS Vx, byte -> Set Vx = kk
             CHIP8.V[opcode->x] = opcode->kk;
             break;
-        case 0x7:
+        case 0x7: // 7xkk - ADD Vx, byte -> Set Vx = Vx + Vy
             CHIP8.V[opcode->x] += opcode->kk;
             break;
         case 0x8:
             switch ( opcode->content & 0xF ) {
-                case 0x0:
+                case 0x0: // 8xy0 - LD Vx, Vy -> Set  Vx = Vy
                     CHIP8.V[opcode->x] = CHIP8.V[opcode->y];
                     break;
-                case 0x1:
+                case 0x1: // 8xy1 - OR Vx, Vy -> Set Vx = Vx OR Vy
                     CHIP8.V[opcode->x] |= CHIP8.V[opcode->y];
                     break;
-                case 0x2:
+                case 0x2: // 8xy2 - AND Vx, Vy -> Set Vx = Vx AND Vy
                     CHIP8.V[opcode->x] &= CHIP8.V[opcode->y];
                     break;
-                case 0x3:
+                case 0x3: // 8xy3 - XOR Vx, Vy -> Set Vx = Vx XOR vy
                     CHIP8.V[opcode->x] ^= CHIP8.V[opcode->y];
                     break;
-                case 0x4:
+                case 0x4: // 8xy4 - ADD Vx, Vy -> Set Vx = Vx, set VF = carry
                     sum = CHIP8.V[opcode->x] + CHIP8.V[opcode->y];
                     CHIP8.V[opcode->x] = sum;
 
@@ -196,25 +196,25 @@ int executeOpcode( opcode_t *opcode ) {
                         CHIP8.V[0xF] = 0;
                     }
                     break;
-                case 0x5:
+                case 0x5: // 8xy5 - SUB Vx, Vy -> Set Vx = Vx - Vy, set VF = NOT borrow
                     carry = CHIP8.V[opcode->x] >= CHIP8.V[opcode->y];
 
                     CHIP8.V[opcode->x] -= CHIP8.V[opcode->y];
                     CHIP8.V[0xF] = carry;
                     break;
-                case 0x6:
+                case 0x6: // 8xy6 - SHR Vx {, Vy} -> Set Vx = Vx SHR 1
                     carry = CHIP8.V[opcode->y] & 1;
                     CHIP8.V[opcode->x] >>= 1;
 
                     CHIP8.V[0xF] = carry;
                     break;
-                case 0x7:
+                case 0x7: // 8xy7 - SUBN Vx, Vy -> Set Vx = Vy - Vx, set VF = NOT borrow
                     carry = CHIP8.V[opcode->y] > CHIP8.V[opcode->x];
 
                     CHIP8.V[opcode->x] = CHIP8.V[opcode->y] - CHIP8.V[opcode->x];
                     CHIP8.V[0xF] = carry;
                     break;
-                case 0xE:
+                case 0xE: // 8xyE - SHL Vx {, Vy} -> Set Vx = Vx SHL 1
                     carry = (CHIP8.V[opcode->x] & 0x80 ) >> 7;
                     CHIP8.V[opcode->x] <<= 1;
 
@@ -223,30 +223,31 @@ int executeOpcode( opcode_t *opcode ) {
             }
 
             break;
-        case 0x9:
+        case 0x9: // 9xy0 - SNE Vx, Vy -> Skip next if Vx != Vy
             if ( CHIP8.V[opcode->x] != CHIP8.V[opcode->y] ) {
                 CHIP8.PC += 2;
             }
             break;
-        case 0xA:
+        case 0xA: // Annn - LD I, addr -> Set I = nnn
             CHIP8.I = opcode->nnn;
             break;
-        case 0xB:
+        case 0xB: // Bnnn - JP V0, addr -> Jump to location NNN + V0
             CHIP8.PC = opcode->nnn + CHIP8.V[0];
             break;
-        case 0xC:
+        case 0xC: // Cxkk - RND Vx, byte -> Set Vx = random byte AND kk
             CHIP8.V[opcode->x] = generateRandom( ) & opcode->kk;
 
             break;
-        case 0xD:
+        case 0xD: // Dxyn - DRW Vx, Vy, nibble -> Display n-bytes sprite starting at I at (Vx, Vy), set VF = collision
+            
             spriteWidth = 8; // Sprites are always 8 pixels wide
-            spriteHeight = opcode->n; // Height of the sprite according to it's size
+            spriteHeight = opcode->n; // Height of the sprite is provided by n
 
             for ( int row = 0; row < spriteHeight; row++ ) { // loop through the rows
                 sprite = CHIP8.ram[CHIP8.I + row];
 
                 for ( int col = 0; col < spriteWidth; col++ ) { // loop through the pixels
-                    if (( sprite & 0x80 ) > 0 ) { // if pixel is white in sprite
+                    if (( sprite & 0x80 ) > 0 ) { // If pixel is TRUE in the sprite
                         CHIP8.V[0xF] = setPixel( CHIP8.V[opcode->x] + col, CHIP8.V[opcode->y] + row ); // set pixel
                     }
 
@@ -254,14 +255,14 @@ int executeOpcode( opcode_t *opcode ) {
                 }
             }
             break;
-        case 0xE:
+        case 0xE: 
             switch ( opcode->content & 0xFF ) {
-                case 0x9E:
+                case 0x9E: // Ex9E - SKP Vx -> Skip next if key Vx is pressed
                     if ( keyboardState[CHIP8.V[opcode->x]] == true ) {
                         CHIP8.PC += 2;
                     }
                     break;
-                case 0xA1:
+                case 0xA1: // ExA1 - SKNP Vx -> Skip next if key Vx is not pressed
                     if ( keyboardState[CHIP8.V[opcode->x]] == false ) {
                         CHIP8.PC += 2;
                     }
@@ -269,40 +270,39 @@ int executeOpcode( opcode_t *opcode ) {
             }
 
             break;
-        case 0xF:
+        case 0xF: 
             switch ( opcode->content & 0xFF ) {
-                case 0x07:
+                case 0x07: // Fx07 - LD Vx, DT -> Set Vx = delay timer value
                     CHIP8.V[opcode->x] = CHIP8.delay_timer;
                     break;
-                case 0x0A:
-                    // TODO: Pause until keypress instruction
+                case 0x0A: // Fx0A - LD Vx, K -> Wait for keypress, store keypressed in Vx
                     CHIP8.paused = true;
                     CHIP8.pauseRegister = opcode->x;
                     SDL_Log("paused");
                     break;
-                case 0x15:
+                case 0x15: // Fx15 - LD DT, Vx -> Set delay timer = Vx
                     CHIP8.delay_timer = CHIP8.V[opcode->x];
                     break;
-                case 0x18:
+                case 0x18: // Fx18 - LD ST, Vx -> Set soundTimer = Vx
                     CHIP8.sound_timer = CHIP8.V[opcode->x];
                     break;
-                case 0x1E:
+                case 0x1E: // Fx1E - ADD I, Vx -> Set I = I + Vx
                     CHIP8.I = CHIP8.I + CHIP8.V[opcode->x];
                     break;
-                case 0x29:
-                    CHIP8.I = CHIP8.V[opcode->x] * 5;
+                case 0x29: // Fx29 - LD F, Vx -> Set I = location of sprite for digit Vx
+                    CHIP8.I = CHIP8.V[opcode->x] * 5; // * 5 since every digit is 5 byte long
                     break;
-                case 0x33:
-                    CHIP8.ram[CHIP8.I] = CHIP8.V[opcode->x] / 100 % 10;
-                    CHIP8.ram[CHIP8.I + 1] = CHIP8.V[opcode->x] / 10 % 10;
-                    CHIP8.ram[CHIP8.I + 2] = CHIP8.V[opcode->x] % 10;
+                case 0x33: // Fx33 - LD F, Vx -> Store BCD representation of Vx in memory locations I, I+1, and I+2
+                    CHIP8.ram[CHIP8.I] = CHIP8.V[opcode->x] / 100 % 10; // Hundreds digit
+                    CHIP8.ram[CHIP8.I + 1] = CHIP8.V[opcode->x] / 10 % 10; // Tens digit
+                    CHIP8.ram[CHIP8.I + 2] = CHIP8.V[opcode->x] % 10; // Ones digit
                     break;
-                case 0x55:
+                case 0x55: // Fx55 - LD [i], Vx -> Store registers V0 through Vx into memory at location I
                     for ( int idx = 0; idx <= opcode->x; idx++ ) {
                         CHIP8.ram[CHIP8.I + idx] = CHIP8.V[idx];
                     }
                     break;
-                case 0x65:
+                case 0x65: // Fx65 - LD Vx, [I] -> Read registers V0 through Vx from memory starting at location I
                     for ( int idx = 0; idx <= opcode->x; idx++ ) {
                         CHIP8.V[idx] = CHIP8.ram[CHIP8.I + idx];
                     }

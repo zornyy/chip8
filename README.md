@@ -22,31 +22,35 @@ The objective is to show the user the processes happening inside of a computer.
 ### Game of Breakout with the emulator
 ![Breakout](./screenshots/Breakout.png)
 
-### Game of Breakout with the emulator
+### Game of Missile with the emulator
 ![Missile](./screenshots/Missile.png)
 
-### Game of Breakout with the emulator
+### Game of Pong with the emulator
 ![Pong](./screenshots/Pong.png)
 
-### Game of Breakout with the emulator
+### Game of Connect 4 with the emulator
 ![Connect 4](./screenshots/Connect4.png)
 
-### Game of Breakout with the emulator
+### Game of Tic Tac Toe with the emulator
 ![Tic Tac Toe](./screenshots/Tictac.png)
 
 ## Build 🏗️
 ```shell
 # Build for debian based Linux
+# Only the package manager changes for other distros
 
 # just in case
 sudo apt install git
 sudo apt install gcc
 sudo apt install make
 
+# download dependencies & project
 sudo apt install libsdl2-dev
 sudo apt install libsdl2-ttf-dev
 git clone https://github.com/xZORNYx/chip8.git
 cd chip8
+
+# compile & run
 make
 ./chip8 programs/Games/breakout.ch8
 # Edit the path to boot on a different program
