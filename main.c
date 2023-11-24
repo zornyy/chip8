@@ -6,9 +6,48 @@
 
 int sizeFactor = 25;
 
+int keyboardLayout[16] = {
+  SDLK_1,
+  SDLK_2,
+  SDLK_3,
+  SDLK_4,
+  SDLK_q,
+  SDLK_w,
+  SDLK_e,
+  SDLK_r,
+  SDLK_a,
+  SDLK_s,
+  SDLK_d,
+  SDLK_f,
+  SDLK_y,
+  SDLK_x,
+  SDLK_c,
+  SDLK_v
+};
+
+int loadConfig( ) {
+  FILE * fp;
+  char * line = NULL;
+  size_t len = 0;
+  ssize_t read;
+
+  fp = fopen("/etc/motd", "r");
+  if (fp == NULL)
+    return EXIT_FAILURE;
+
+  while ((read = getline(&line, &len, fp)) != -1) {
+    printf("Retrieved line of length %zu:\n", read);
+    printf("%s", line);
+  }
+
+  fclose(fp);
+  if (line)
+    free(line);
+  return EXIT_SUCCESS;
+}
 
 int initProgram( char *rom ) {
-    initKeyboard( );
+    initKeyboard( keyboardLayout );
     initDisplay( sizeFactor );
 
     initCPU( );

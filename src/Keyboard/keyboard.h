@@ -8,7 +8,7 @@
 /*
  * Function initializes the keyboard according to the layout
  */
-void initKeyboard( );
+void initKeyboard( int keypadLayout[] );
 
 /*
  * Param: keyCode ( int ) The keyCode of the key that has been pressed
