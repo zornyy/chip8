@@ -4,10 +4,12 @@
 #include "src/Keyboard/keyboard.h"
 #include "src/cpu/cpu.h"
 
+int sizeFactor = 25;
+
 
 int initProgram( char *rom ) {
     initKeyboard( );
-    initDisplay( 25 );
+    initDisplay( sizeFactor );
 
     initCPU( );
 
@@ -23,7 +25,12 @@ int initProgram( char *rom ) {
 int main( int argc, char *argv[] ) {
     SDL_Log("%s", argv[1]);
     // Initialize every dependencies
-    if ( initProgram( argv[1] ) == 1 ) {
+    
+    if ( argv[2] ) {
+      sizeFactor = atoi(argv[2]); 
+      SDL_Log( "%d", sizeFactor );  
+    }
+       if ( initProgram( argv[1] ) == 1 ) {
         return 1;
     }
 

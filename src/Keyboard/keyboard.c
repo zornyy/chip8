@@ -21,8 +21,6 @@ void initKeyboard( ) {
 }
 
 void pressKey( int keyCode ) {
-    SDL_Log("Key pressed: %d", keyCode);
-    
     int keyValue;
 
     switch ( keyCode ) {
@@ -106,7 +104,6 @@ void pressKey( int keyCode ) {
 }
 
 void releaseKey( int keyCode ) {
-    SDL_Log("Key released: %d", keyCode);
     switch ( keyCode ) {
         case SDLK_1 :
             keyboardState[0] = false;

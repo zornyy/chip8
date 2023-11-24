@@ -39,7 +39,8 @@ void initDebug( int pxSize, int sizeH, int sizeV ) {
   vDebug.x = pxSize * 64, vDebug.y = 0, vDebug.w = pxSize * sizeV, vDebug.h = pxSize * 32;
   hDebug.x = 0, hDebug.y = pxSize * 32, hDebug.w = pxSize * ( 64 + sizeV ), hDebug.h = pxSize * sizeH;
   
-  keypadRect.x = pixelSize * 40, keypadRect.y = pixelSize * 37, keypadRect.h = pixelSize * 18, keypadRect.w = pixelSize * 18;
+  keypadRect.x = pixelSize * 40, keypadRect.y = pixelSize * 37;
+  keypadRect.h = pixelSize * 18, keypadRect.w = pixelSize * 18;
   keypadSurface = SDL_LoadBMP( "./src/fonts/Keypad.bmp" );
 
   logoRect.x = pixelSize * ( 61 + sizeV );
