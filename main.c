@@ -25,28 +25,9 @@ int keyboardLayout[16] = {
   SDLK_v
 };
 
-int loadConfig( ) {
-  FILE * fp;
-  char * line = NULL;
-  size_t len = 0;
-  ssize_t read;
-
-  fp = fopen("/etc/motd", "r");
-  if (fp == NULL)
-    return EXIT_FAILURE;
-
-  while ((read = getline(&line, &len, fp)) != -1) {
-    printf("Retrieved line of length %zu:\n", read);
-    printf("%s", line);
-  }
-
-  fclose(fp);
-  if (line)
-    free(line);
-  return EXIT_SUCCESS;
-}
 
 int initProgram( char *rom ) {
+    
     initKeyboard( keyboardLayout );
     initDisplay( sizeFactor );
 
@@ -62,15 +43,16 @@ int initProgram( char *rom ) {
  *  The main loop of the program runs in the showWindow function.
  */
 int main( int argc, char *argv[] ) {
-    SDL_Log("%s", argv[1]);
+    SDL_Log( "Booting on: %s", argv[1] );
     // Initialize every dependencies
     
     if ( argv[2] ) {
-      sizeFactor = atoi(argv[2]); 
-      SDL_Log( "%d", sizeFactor );  
+      sizeFactor = atoi(argv[2]);     
     }
-       if ( initProgram( argv[1] ) == 1 ) {
-        return 1;
+
+    SDL_Log( "Pixel size at display: %d", sizeFactor );
+    if ( initProgram( argv[1] ) == 1 ) {
+      return 1;
     }
 
     // Start the main Loop and show the window

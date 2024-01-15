@@ -8,7 +8,7 @@
 #include "../debug/debug.h"
 #include "../Keyboard/keyboard.h"
 
-
+#define FPS 60
 
 // SDL Utility Variables  
 SDL_Window *window;
@@ -18,7 +18,6 @@ SDL_Renderer *renderer;
 SDL_Rect drawingRect;
 
 // Framerate variables
-const int FPS = 60;
 const int frameDelay = 1000 / FPS;
 Uint64 frameStart;
 Uint64 frameTime;
@@ -120,7 +119,8 @@ int setPixel( int x, int y ) {
 
 void initDisplay( int pixelSize ) {
     SDL_Init( SDL_INIT_EVERYTHING );
-    if( TTF_Init( ) == -1 ) {
+    
+  if( TTF_Init( ) == -1 ) {
       SDL_Log("Could not initialize TTF");
     } else {
       SDL_Log("TTF initialized");

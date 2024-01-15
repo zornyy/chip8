@@ -10,28 +10,11 @@
 
 bool keyboardState[16];
 
-int keypadRefTable[16][2] = {
-  {0, SDLK_1},
-  {1, SDLK_2},
-  {2, SDLK_3},
-  {3, SDLK_4},
-  {4, SDLK_q},
-  {5, SDLK_w},
-  {6, SDLK_e},
-  {7, SDLK_r},
-  {8, SDLK_a},
-  {9, SDLK_s},
-  {10, SDLK_d},
-  {11, SDLK_f},
-  {12, SDLK_y},
-  {13, SDLK_x},
-  {14, SDLK_c},
-  {15, SDLK_v},
-};
+int keypadRefTable[16];
 
 void loadKeyboardLayout( int layout[] ) {
   for ( int i = 0; i < 16; i++ ) {
-    keypadRefTable[i][1] = layout[i];
+    keypadRefTable[i] = layout[i];
   }
 }
 
@@ -49,7 +32,7 @@ void initKeyboard( int keypadLayout[] ) {
 void pressKey( int keyCode ) {
     int keyValue;
     
-    // Change keyboard mode
+    // Change execution mode
     switch ( keyCode ) {
       case SDLK_SPACE :
         CHIP8.stepMode = !CHIP8.stepMode;
@@ -60,22 +43,23 @@ void pressKey( int keyCode ) {
     }
     
     for ( int i = 0; i < 16; i++ ) {
-      if ( keypadRefTable[i][1] == keyCode ) {
+      if ( keypadRefTable[i] == keyCode ) {
         keyboardState[i] = true;
+        keyValue = i;
       }
     }
-
+    
+    // Unpause & store key if needed
     if ( CHIP8.paused ) {
       CHIP8.V[CHIP8.pauseRegister] = keyValue;
       CHIP8.paused = false;
-      SDL_Log("Unpaused chip8 execution");
     }
 }
 
 void releaseKey( int keyCode ) {
   
   for ( int i = 0; i < 16; i++ ) {
-    if ( keypadRefTable[i][1] == keyCode ) {
+    if ( keypadRefTable[i] == keyCode ) {
       keyboardState[i] = false;
     }  
   }

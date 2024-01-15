@@ -41,16 +41,16 @@ void initDebug( int pxSize, int sizeH, int sizeV ) {
   
   keypadRect.x = pixelSize * 40, keypadRect.y = pixelSize * 37;
   keypadRect.h = pixelSize * 18, keypadRect.w = pixelSize * 18;
-  keypadSurface = SDL_LoadBMP( "./src/fonts/Keypad.bmp" );
+  keypadSurface = SDL_LoadBMP( "./src/static/Keypad.bmp" );
 
   logoRect.x = pixelSize * ( 61 + sizeV );
   logoRect.y = pixelSize * ( 29 + sizeH );
   logoRect.w = pixelSize * 2.5;
   logoRect.h = pixelSize * 2.5;
-  logoSurface = SDL_LoadBMP( "./src/fonts/logo.bmp" );
+  logoSurface = SDL_LoadBMP( "./src/static/logo.bmp" );
 
   // Setting up the variables for SDL_ttf
-  nerdFont = TTF_OpenFont( "./src/fonts/JetBrainsMonoNL-Medium.ttf", 64 );
+  nerdFont = TTF_OpenFont( "./src/static/JetBrainsMonoNL-Medium.ttf", 64 );
   if ( !nerdFont ) {
     SDL_Log("Font could not be loaded, check the specified path");
   } else {
