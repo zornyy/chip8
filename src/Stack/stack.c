@@ -10,17 +10,11 @@
 
 
 bool isEmpty( Stack *stack ) {
-    if ( stack->top == 0 ) {
-        return true;
-    }
-    return false;
+    return stack->top == 0;
 }
 
 bool isFull( Stack *stack ) {
-    if ( stack->top == 17 ) {
-        return true;
-    }
-    return false;
+    return stack->top == 17;
 }
 
 int push( Stack *stack, uint16_t value ) {
