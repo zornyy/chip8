@@ -1,25 +1,26 @@
 CC = gcc
-CFLAGS = -lSDL2 -lSDL2_ttf -ldl
+CFLAGS = -I/usr/include/SDL2
+LDFLAGS = -lSDL2 -lSDL2_ttf -ldl
 
 chip8: main.o cpu.o display.o keyboard.o stack.o debug.o
-	$(CC) main.o cpu.o display.o keyboard.o stack.o debug.o -o chip8 $(CFLAGS)
+	$(CC) main.o cpu.o display.o keyboard.o stack.o debug.o -o chip8 $(LDFLAGS)
 
 main.o: main.c 
-	$(CC) -c main.c
+	$(CC) -c main.c $(CFLAGS)
 
-cpu.o: main.c src/cpu/cpu.c src/cpu/cpu.h 
+cpu.o: src/cpu/cpu.c src/cpu/cpu.h 
 	$(CC) -c src/cpu/cpu.c $(CFLAGS)
 
-display.o: main.c src/Display/display.c src/Display/display.h 
+display.o: src/Display/display.c src/Display/display.h 
 	$(CC) -c src/Display/display.c $(CFLAGS)
 
-keyboard.o: main.c src/Keyboard/keyboard.c src/Keyboard/keyboard.h 
+keyboard.o: src/Keyboard/keyboard.c src/Keyboard/keyboard.h 
 	$(CC) -c src/Keyboard/keyboard.c $(CFLAGS)
 
-stack.o: main.c src/Stack/stack.c src/Stack/stack.h 
+stack.o: src/Stack/stack.c src/Stack/stack.h 
 	$(CC) -c src/Stack/stack.c $(CFLAGS)
 
-debug.o: main.c src/debug/debug.c src/debug/debug.h 
+debug.o: src/debug/debug.c src/debug/debug.h 
 	$(CC) -c src/debug/debug.c $(CFLAGS)
 
 clean:

@@ -54,6 +54,13 @@ cd chip8
 make
 ./chip8 programs/Games/breakout.ch8
 # Edit the path to boot on a different program
+
+
+# Arch based distros 🗿
+sudo pacman -S git gcc make sdl2 sdl2_ttf
+
+make
+./chip8 programs/Games/breakout.ch8 10 
 ```
 
 ## Help and Sources 🪐
