@@ -160,10 +160,14 @@ int showWindow( ) {
       return 1;
     }
 
-    renderer = SDL_CreateRenderer( window, -1, SDL_RENDERER_ACCELERATED );
-    if ( NULL == renderer ) {
-      SDL_Log("Could not create renderer");
-      return 1;
+    renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
+    if (renderer == NULL) {
+      SDL_Log("Hardware-accelerated renderer failed, trying software renderer: %s", SDL_GetError());
+      renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_SOFTWARE);
+      if (renderer == NULL) {
+        SDL_Log("Could not create renderer: %s", SDL_GetError());
+        return 1;
+      }
     }
 
 
